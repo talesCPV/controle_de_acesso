@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login</title>
+    <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet'>
+    <style>
+        body{
+            background-image: url("https://www.senior.com.br/wp-content/uploads/2018/09/Controle-de-Acesso-853x480.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            font-family: 'Raleway';font-size: 14px;        
+        }
+        nav{
+            display: grid;
+            background: rgb(50, 50, 50,0.5);
+            width : 200px;
+            height: 300px;
+            position: absolute;
+            top: 0; bottom: 0;
+            left: 0; right: 0;
+            margin: auto ;
+            border-radius: 20px;
+            padding: 30px;
+        }
+        footer, .logo{
+            margin: 0 auto;
+            color: aliceblue;
+        }
+        img{
+            width: 100%;
+        }
+
+        button, input{
+            width: 100%;
+            margin: 0 auto;
+            padding: 5px;    
+            box-sizing: border-box;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <h1>Portal da Mata</h1>             
+        </div>
+        <div class="form">       
+            <input type="text" name="edtUser" id="edtUser" placeholder="USUARIO">         
+            <input type="password" name="edtPass" id="edtPass" placeholder="SENHA">
+            <button id="btnLogin">Login</button>
+        </div>
+        <footer>
+            <p>Controle de Acesso - 2021<span>&#174;</span></p> 
+        </footer>
+    </nav>    
+</body>
+
+<script>
+    localStorage.clear();
+    document.getElementById('btnLogin').addEventListener('click',()=>{
+
+        const mail = document.getElementById('edtUser').value.trim();
+        const pass = document.getElementById('edtPass').value.trim();
+
+        const params = new Object;
+            params.user = mail;
+            params.pass = pass;
+
+        const data = new URLSearchParams();        
+        data.append("cod", 0);
+        data.append("token", '');
+        data.append("params", JSON.stringify(params));
+
+        const myRequest = new Request("db/query_db.php",{
+            method : "POST",
+            body : data
+        });
+
+        const myPromisse = new Promise((resolve,reject) =>{
+
+            fetch(myRequest)
+            .then(function (response){
+
+                if (response.status === 200) { 
+                    resolve(response.text());
+                } else { 
+                    reject(new Error("Houve algum erro na comunicação com o servidor"));
+                } 
+
+            });            
+
+        });
+
+        myPromisse.then((resolve)=>{
+//            console.log(resolve);
+            if(resolve.trim() != ""){
+                const json = JSON.parse(resolve);
+//                console.log(json);
+                localStorage.setItem("id",json[0].id);
+                localStorage.setItem("user",json[0].user);
+                localStorage.setItem("nome",json[0].nome);
+                localStorage.setItem("class",json[0].class);
+                localStorage.setItem("token",json[0].token);
+                localStorage.setItem("email",json[0].email);
+                window.open("dashboard.html","_self")
+            }else{
+                alert("Usuário ou senha inválido!");
+                localStorage.clear();
+            }        
+
+        });
+
+    });   
+
+</script>
+</html>

@@ -1,0 +1,205 @@
+
+
+<template>
+ 
+  <style>
+
+    .calendar{
+      display : grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+      grid-template-rows: 1fr repeat(6, 4fr);
+      gap: 20px;
+    }
+
+    .dayLabel{
+
+      padding-top : 5px;
+      background : #606060;
+      color : #FFFFFF;
+      text-align: center;
+   
+    }
+
+    .dayText{
+      display: flex;
+      align-items: center;
+      justify-content: left;
+      width : 100%;
+      height : 100%;
+      /*background : #FFFF00;*/
+    }
+
+    .daysquare{
+      height : 15vh;
+      width : 10vw;
+      /*background : #F6F6F6;*/
+      cursor : pointer;
+      text-align: right;
+    }    
+
+    #cmbMes, #edtAno{
+      width: 48%;
+      padding: 5px;
+      margin: 5px;
+      font-size: 20px;
+    }
+
+
+  </style>
+
+  	  <div class="page_form" id="head">
+        <select name="cmbMes" id="cmbMes">
+          <option value='0'>JANEIRO</option>
+          <option value='1'>FEVEREIRO</option>
+          <option value='2'>MARÇO</option>
+          <option value='3'>ABRIL</option>
+          <option value='4'>MAIO</option>
+          <option value='5'>JUNHO</option>
+          <option value='6'>JULHO</option>
+          <option value='7'>AGOSTO</option>
+          <option value='8'>SETEMBRO</option>
+          <option value='9'>OUTUBRO</option>
+          <option value='10'>NOVEMBRO</option>
+          <option value='11'>DEZEMBRO</option>
+        </select>
+        <input type="number" id="edtAno" name="edtAno" min="2000" max="2100" value=''>
+    
+      </div>
+
+    <div class="page_form calendar"id="no_margin"></div>
+
+
+
+</template>
+
+<script>
+
+    const cmbMes = document.querySelector('#cmbMes'); 
+    const cmbAno = document.querySelector('#edtAno'); 
+    const user_id = localStorage.getItem("id");
+//    const today = new Date(); // ja existe no dashboard
+
+    cmbAno.value = today.getFullYear();
+    cmbMes.value = today.getMonth();
+
+    cmbMes.addEventListener('change',()=>{
+      openCalendar();
+    })
+
+    cmbAno.addEventListener('change',()=>{
+      openCalendar();
+    })
+
+    openCalendar();
+
+    function openCalendar(){
+      const screen = document.querySelector('.calendar');
+      const mes = document.querySelector('#cmbMes');
+      const ano = document.querySelector('#edtAno');
+      const day = new Date();
+      
+      let row = 0;
+
+      day.setMonth(mes.value);
+      day.setYear(ano.value);
+      day.setDate(1);
+//      console.log(day.getFullYear())
+      if(day.getDay() <= 2 ){
+        day.setDate(day.getDate() - (7 + day.getDay()));
+      }else{
+        day.setDate(day.getDate() - day.getDay());
+      }
+
+
+      const endDay = new Date(day);
+      endDay.setDate(endDay.getDate() + 41);
+
+     const schedule = busca(day,endDay);
+
+      screen.innerHTML=`
+        <div class='dayLabel'>Domingo</div>
+        <div class='dayLabel'>Segunda</div>
+        <div class='dayLabel'>Terça</div>
+        <div class='dayLabel'>Quarta</div>
+        <div class='dayLabel'>Quinta</div>
+        <div class='dayLabel'>Sexta</div>
+        <div class='dayLabel'>Sábado</div>`;
+
+      for(let x=0; x<7; x++){
+        for(let y=0; y<6; y++){
+          const div = document.createElement('div');
+          div.classList.add("daysquare");
+          div.id = String(day.getDate()).padStart(2, '0')+'/'+String((day.getMonth()+1)).padStart(2, '0');
+          div.innerHTML = div.id +`<div class="dayText"></div><div class='data' style='display:none;'>${day.getFullYear()+'-'+String((day.getMonth()+1)).padStart(2, '0')+'-'+String(day.getDate()).padStart(2, '0')+' 00:00:00' }</div>`;
+           div.innerHTML;
+          if(day.getMonth() == mes.value){
+            div.style = 'background : #F0F0F0;'
+          }else{
+            div.style = 'background : #E0E0E0;'
+          }
+
+          if(day.getDate()=== today.getDate() && day.getMonth()=== today.getMonth() && day.getFullYear()=== today.getFullYear()){
+            div.style.border = '5px solid red'
+          }
+
+          div.addEventListener('click',()=>{
+            clickDate(div)
+          });
+
+//          console.log(day.getDate(), today.getDate())
+
+          screen.appendChild(div);
+          day.setDate(day.getDate() + 1);
+
+        }
+      }   
+
+      function clickDate(square){
+//        console.log(square)
+        openHTML("schedule.html",'PopUp', "Agenda do dia - "+square.id+'/'+cmbAno.value);
+      }
+ 
+    }
+    
+
+    function busca(start,end){
+
+//      console.log(start,end)
+
+
+      function correctDate(D){
+        return String(D.getFullYear()).padStart(4, '0') + '-' + String(D.getMonth() + 1).padStart(2, '0') + '-' + String(D.getDate()).padStart(2, '0')
+      }
+
+
+      const params = new Object;
+        params.id_user = user_id;
+        params.dt_ini = correctDate(start);
+        params.dt_fin = correctDate(end);
+
+        const myPromisse = queryDB(params,2);
+
+        myPromisse.then((resolve)=>{
+            if(resolve.trim() != ""){
+              const json = JSON.parse(resolve);
+              for(let i=0; i<json.length; i++){
+                const id =   json[i].dt_schedule.substring(8,10)+"/"+json[i].dt_schedule.substring(5,7);
+                const txt = id+"<br>"+json[i].txt;
+                const square = document.getElementById(id);
+                square.innerHTML = txt;
+                square.style.background = "#f8f693"
+              }
+              
+            }else{
+
+            }        
+
+        });
+
+    }
+
+
+
+    </script>    
+
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Acesso</title>
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet'>
+</head>
+<body>
+    <div class="wrapper">
+        <nav class="fixed menu">
+            <a href="#">Controle de Acesso</a>
+            <div class="data-user"></div>
+        </nav>
+        <div class="main">
+            <main class="item side-bar">
+           
+              <div class="menu-aba">MENU</div>
+              <div class="menu-bar">
+                <ul>
+                    <li><a href="#"> teste </a></li>
+                    <li><a href="#A">Sub-menu</a>
+                        <ul id="A" class="sub-menu">
+                            <li><a href="#">abc</a></li>
+                            <li><a href="#">def</a></li>
+                            <li><a href="#">ghi</a></li>
+
+                        </ul>
+                    </li>
+                </ul>                  
+              </div>
+
+            </main>
+            <section class="item screen"></section>
+        </div>
+        <footer class="fixed footer"></footer>    
+    </div>
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">
+                <p id="modal-title">some title...</p>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-text">
+                <p>Some text in the Modal..</p>
+            </div>
+        </div>
+    
+    </div>  
+</body>
+  <script>
+    
+    var screen = document.querySelector(".screen");
+    var modal = document.getElementById("myModal");
+    var modal_title = document.getElementById("modal-title");
+    var modal_text = document.querySelector(".modal-text");
+    var btnClose = document.querySelector(".close");
+
+
+    openMenu();
+
+    const today = new Date();
+    document.querySelector('.footer').innerHTML =  `Caçapava, ${('0' + today.getDate()).slice(-2) }/${('0' + (today.getMonth() + 1)).slice(-2) }/${today.getFullYear()} `  ;
+    document.querySelector('.data-user').innerHTML = localStorage.getItem("user") +  '<a href="#" onclick="logout_here()"> <i class="fa fa-power-off" aria-hidden="true"></i></a>';
+    document.querySelector('.menu-aba').addEventListener('click',()=>{
+        const menu = document.querySelector('.menu-bar');
+
+        if(menu.style.width == "0px" || menu.style.width == "" ){
+            menu.style.width =  "350px";
+            menu.style.padding =  "20px 0 0 20px";
+        }else{
+            menu.style.width =  "0";
+            menu.style.padding =  "20px 0 0 0";
+        }
+    })
+
+    function logout_here(){
+        localStorage.clear();
+        window.open("index.html","_self")  
+    }
+
+    function openMenu(){
+        if(localStorage.getItem("token") == null){
+            logout_here();
+        }else{
+
+            let menu_bar = document.querySelector('.menu-bar');
+            menu_bar.innerHTML = "";
+
+            const data = new URLSearchParams();        
+            data.append("token", localStorage.getItem("token"));
+
+            const myRequest = new Request("db/openMenu.php",{
+                method : "POST",
+                body : data
+            });           
+
+            fetch(myRequest)
+            .then((response)=>{
+
+                if (response.status === 200) { 
+                    return response.text();                                          
+                } else { 
+                    reject(new Error("Houve algum erro na comunicação com o servidor"));                        
+                } 
+
+            })
+
+            .then((json)=>{ // montagem do menu
+                const menu = JSON.parse(json)
+                let list = document.createElement('ul');
+                for(let index=0; index< menu.length; index++){
+                    const item = menu[index];
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.href = '#menu-'+index;
+                    a.innerHTML = item.nome;
+                    const ul = document.createElement('ul');
+                        ul.id = "menu-"+index;
+                        ul.className = "sub-menu";
+                    if(item.itens.length > 0){
+                        for(let i=0; i< item.itens.length; i++){
+                            const sub_li = document.createElement('li');
+                            const sub_a = document.createElement('a');
+                            sub_a.innerHTML = item.itens[i].nome;
+                            sub_li.appendChild(sub_a);
+                            sub_li.addEventListener('click',()=>{
+                                openHTML(item.itens[i].template);
+                            });
+                            ul.appendChild(sub_li);
+                        }
+                    }else{
+                        li.addEventListener('click',()=>{
+                            openHTML(item.template);
+                        });
+                    }
+
+                    li.appendChild(a);
+                    li.appendChild(ul);
+                    list.appendChild(li);                
+                    menu_bar.appendChild(list)
+                    if(item.autoexec){
+                        openHTML(item.template);
+                    }                    
+                }
+
+            });
+                
+
+        }
+        
+    }
+
+    function openHTML(template,where="window",label){
+        if(template.trim() != ""){
+            fetch( "templates/"+template)
+            .then( stream => stream.text())
+            .then( text => {
+                const temp = document.createElement('div');
+                temp.innerHTML = text;
+                const body = temp.getElementsByTagName('template')[0];
+                const script = temp.getElementsByTagName('script')[0];
+                if(body != undefined){
+                    if(where == "window"){
+                    screen.innerHTML = body.innerHTML
+                }else{
+                    modal_text.innerHTML = body.innerHTML;
+                    modal_title.innerHTML = label;
+                    modal.style.display = "block";
+                }
+                eval(script.innerHTML);
+                }
+            }); 
+        }
+    }
+
+    function queryDB(params,cod){
+        const data = new URLSearchParams();        
+        data.append("cod", cod);
+        data.append("token", localStorage.getItem("token"));
+        data.append("params", JSON.stringify(params));
+
+        const myRequest = new Request("db/query_db.php",{
+            method : "POST",
+            body : data
+        });
+
+        return new Promise((resolve,reject) =>{
+
+          fetch(myRequest)
+          .then(function (response){
+
+              if (response.status === 200) { 
+                  resolve(response.text());
+                  
+              } else { 
+                  reject(new Error("Houve algum erro na comunicação com o servidor"));
+                 
+              } 
+
+          });            
+
+        });      
+    }
+
+    // CLOSE MODAL
+    document.querySelector('.close').addEventListener('click',()=>{
+        modal.style.display = "none";
+    })
+
+
+</script>
+</html>
