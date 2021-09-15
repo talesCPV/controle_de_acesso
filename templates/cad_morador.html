@@ -39,7 +39,39 @@
   
     <script>
         document.getElementById('btnSave').addEventListener('click',()=>{
-            alert(2)
+            const nome = document.getElementById('edtNome');
+            const cpf = document.getElementById('edtCPF');
+            const rg = document.getElementById('edtRG');
+            const email = document.getElementById('edtEmail');
+            const telefone = document.getElementById('edtTelefone');
+            const celular = document.getElementById('edtCelular');
+            const obs = document.getElementById('txtObs');
+
+            const params = new Object;
+                params.nome = nome.value;
+                params.CPF = cpf.value;
+                params.RG = rg.value;
+                params.morador = true;
+                params.foto = null;
+                params.email = email.value;
+                params.tel = telefone.value;
+                params.cel = celular.value;
+                params.obs = obs.value;                
+
+            const myPromisse = queryDB(params,5);            
+
+            myPromisse.then((resolve)=>{         
+                alert('Cadastro Salvo');
+                nome.value = '';
+                cpf.value = '';
+                rg.value = '';
+                email.value = '';
+                telefone.value = '';
+                celular.value = '';
+                obs.value = '';
+                nome.focus();
+            });             
+
         })
  
   

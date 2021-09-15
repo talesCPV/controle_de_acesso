@@ -31,7 +31,7 @@
     </style>
     <div class='form-modal'>
         <textarea rows = '20' id='txtSchedule' > </textarea>
-        <button id="btnSalvar" >Salvar</button>
+        <button id="btnSalvar" >Salvarrr</button>
       </div> 
 
 </template>
@@ -85,52 +85,6 @@
 
 
     })
-
-    function Save(D){
-        
-        function correctDate(D){
-          return String(D.getFullYear()).padStart(4, '0') + '-' + String(D.getMonth() + 1).padStart(2, '0') + '-' + String(D.getDate()).padStart(2, '0') +' 00:00:00'
-        }
-        const txtDia = document.getElementById('txtSchedule');
-  
-        let query = `INSERT INTO tb_calendario (id_user, data_agd, obs) VALUES(${user_id}, '${D}', '${txtDia.value}')
-           ON DUPLICATE KEY UPDATE   obs='${txtDia.value}'; `;
-  
-        if(txtDia.value.trim() == ''){
-          query = `DELETE FROM tb_calendario WHERE id_user=${user_id} AND data_agd='${D}' ; `;
-        }
-          
-  //      console.log(query);
-  
-          const data = new URLSearchParams();        
-          data.append("query", query);
-  
-          const myRequest = new Request('ajax/ajax.php',{
-              method: 'POST',
-              body: data
-          });
-  
-          const myPromisse = new Promise((resolve,reject) =>{
-      
-              fetch(myRequest)
-              .then(function (response){
-  
-                  if (response.status === 200) { 
-  //                    resolve(response.text());
-                    document.querySelector('.overlay').style = ' visibility : hidden; opacity : 0;';
-                    location.reload();
-  
-                  } else { 
-                      reject(new Error("Houve algum erro na comunicação com o servidor"));
-                  } 
-              });
-  
-          });
-  
-  
-  //        fetch(myRequest)
-       
-      }
 
 
 </script>
