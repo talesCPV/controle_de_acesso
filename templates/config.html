@@ -1,0 +1,53 @@
+<template>
+
+    <style>
+  
+        h2{
+            width: 100%;
+            text-align: center;
+        }
+
+        .page_form{
+            display : flex;
+            flex-direction: column;
+        }
+    
+        .page_form > label, .page_form > button, .page_form > input {
+            margin-top: 15px;
+        }
+  
+    </style>
+
+    <div class="page_form" id="head">
+        <h2>CONFIGURAÇÕES</h2>
+
+        <label> Ruas</label>
+        <select id="cmbRuas" size="5"></select>
+        <input type="text" id="edtRua">
+        <button id="btnRua">Adicionar</button>
+
+    </div>
+
+
+
+</template>
+
+<script>
+    const cmbRuas = document.getElementById('cmbRuas');
+    const edtRuas = document.getElementById('edtRua');
+    const btnRuas = document.getElementById('btnRua');
+
+    btnRuas.addEventListener('click',()=>{ // 
+
+        alert(edtRuas.value)
+
+    })
+
+    cmbRuas.addEventListener('dblclick',()=>{
+
+        alert('teste')
+
+    })
+
+
+</script>

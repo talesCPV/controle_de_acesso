@@ -12,7 +12,7 @@
             $class = $resp["class"];
         }
 
-        $json = file_get_contents('assets/menu.json');
+        $json = file_get_contents('../assets/menu.json');
         $json = json_decode($json, true);
 
         $out = [];
@@ -29,7 +29,6 @@
                 $item["itens"] = $sub;
                 array_push($out,$item);
             }
-
        
         }
 
