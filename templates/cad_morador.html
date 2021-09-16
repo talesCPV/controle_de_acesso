@@ -4,22 +4,27 @@
  
     <style>
   
+        h2{
+            width: 100%;
+            text-align: center;
+        }
+
       .page_form{
         display : flex;
         flex-direction: column;
       }
   
-      .page_form > input, .page_form > textarea {
-          margin-bottom: 15px;
+      .page_form > label, .page_form > button {
+          margin-top: 15px;
       }
-  
-
   
     </style>
   
     <div class="page_form" id="head">
+        <h2>CADASTRO DE MORADORES</h2>
+
         <label>Nome:</label>
-        <input type="text" id="edtNome" maxlength="50">
+        <input type="text" id="edtNome" maxlength="50">     
         <label>CPF:</label>
         <input type="text" id="edtCPF" maxlength="14">
         <label>RG:</label>
@@ -29,7 +34,11 @@
         <label>Celular:</label>
         <input type="text" id="edtCelular" maxlength="15">
         <label>Email:</label>
-        <input type="text" id="edtEmail" maxlength="50">        
+        <input type="text" id="edtEmail" maxlength="50">
+        <label>Rua</label>
+        <select id="cmbRua"></select>
+        <label>Número:</label>
+        <input type="text" id="edtNum" maxlength="5">        
         <label>Obs:</label>
         <textarea id="txtObs" rows="10"></textarea>
         <button id="btnSave">Salvar</button>
@@ -38,8 +47,13 @@
     </template>
   
     <script>
+
+        loadCombo();
+
         document.getElementById('btnSave').addEventListener('click',()=>{
             const nome = document.getElementById('edtNome');
+            const rua = document.getElementById('cmbRua');
+            const num = document.getElementById('edtNum');
             const cpf = document.getElementById('edtCPF');
             const rg = document.getElementById('edtRG');
             const email = document.getElementById('edtEmail');
@@ -49,9 +63,11 @@
 
             const params = new Object;
                 params.nome = nome.value;
+                params.rua = rua.value;
+                params.num = num.value;
                 params.CPF = cpf.value;
                 params.RG = rg.value;
-                params.morador = true;
+                params.status = "MORADOR";
                 params.foto = null;
                 params.email = email.value;
                 params.tel = telefone.value;
@@ -63,6 +79,7 @@
             myPromisse.then((resolve)=>{         
                 alert('Cadastro Salvo');
                 nome.value = '';
+                num.value = '';
                 cpf.value = '';
                 rg.value = '';
                 email.value = '';
@@ -74,7 +91,38 @@
 
         })
  
-  
+        function loadCombo(){
+            const data = new URLSearchParams();        
+            data.append("path", 'assets/ruas.txt');
+
+            const myRequest = new Request("db/getTxt.php",{
+                method : "POST",
+                body : data
+            });           
+
+            fetch(myRequest)
+            .then((response)=>{
+
+                if (response.status === 200) { 
+                    return response.text();                                          
+                } else { 
+                    reject(new Error("Houve algum erro na comunicação com o servidor"));                        
+                } 
+
+            })
+
+            .then((txt)=>{ 
+                const rua = document.getElementById('cmbRua');
+                txt = txt.substring(1,txt.length-1) // tira as aspas ("txt")
+                const rows = txt.split('\\n');
+                for(let i=0; i<rows.length; i++){
+                    const opt = document.createElement('option');
+                    opt.innerHTML = rows[i];
+                    rua.appendChild(opt);
+                }
+               
+            })
+        }
   
     </script>    
   

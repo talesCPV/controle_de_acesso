@@ -12,15 +12,25 @@
             $class = $resp["class"];
         }
 
-        $json = file_get_contents('menu.json');
+        $json = file_get_contents('assets/menu.json');
         $json = json_decode($json, true);
 
         $out = [];
 
         foreach ( $json["modulos"] as $item){
+
             if (in_array($class, $item["perm"])) { 
+                    $sub = [];
+                foreach ( $item['itens'] as $menu_sub){
+                    if (in_array($class, $menu_sub["perm"])) {
+                        array_push($sub,$menu_sub);
+                    }                
+                }
+                $item["itens"] = $sub;
                 array_push($out,$item);
             }
+
+       
         }
 
         print json_encode($out);
