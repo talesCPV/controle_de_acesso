@@ -33,12 +33,13 @@
         <input type="text" id="edtTelefone" maxlength="15">
         <label>Celular:</label>
         <input type="text" id="edtCelular" maxlength="15">
-        <label>Email:</label>
+        <label>Email:</label>        
         <input type="text" id="edtEmail" maxlength="50">
+        <label>Foto</label>
+        <button id="btnFoto">Tirar Foto</button>
+        <input type="hidden" id="hdnFoto" value='' maxlength="5">        
         <label>Morador</label>
         <select id="cmbMorador"></select>
-<!--         <label>Número:</label>  -->
-        <input type="hidden" id="hdnNum" maxlength="5">        
         <label>Obs:</label>
         <textarea id="txtObs" rows="10"></textarea>
         <button id="btnSave">Salvar</button>
@@ -49,10 +50,14 @@
     <script>
 
         loadCombo();
+        document.getElementById('btnFoto').addEventListener('click',()=>{
+            openHTML('foto.html','pop-up','TIRAR FOTO DO VISITANTE')
+
+        })
 
         document.getElementById('btnSave').addEventListener('click',()=>{
             const nome = document.getElementById('edtNome');
-            const rua = document.getElementById('cmbRua');
+            const rua = document.getElementById('cmbMorador');
             const num = document.getElementById('edtNum');
             const cpf = document.getElementById('edtCPF');
             const rg = document.getElementById('edtRG');
@@ -92,36 +97,27 @@
         })
  
         function loadCombo(){
-            const data = new URLSearchParams();        
-            data.append("path", 'assets/ruas.txt');
 
-            const myRequest = new Request("db/getTxt.php",{
-                method : "POST",
-                body : data
-            });           
+            const params = new Object;
+                params.status = "MORADOR"
 
-            fetch(myRequest)
-            .then((response)=>{
+            const resp = queryDB(params,7);
 
-                if (response.status === 200) { 
-                    return response.text();                                          
-                } else { 
-                    reject(new Error("Houve algum erro na comunicação com o servidor"));                        
-                } 
+            resp.then((resolve)=>{
+                console.log(resolve)            
+                const rua = document.getElementById('cmbMorador');                
+                const rows =  JSON.parse(resolve);
 
-            })
-
-            .then((txt)=>{ 
-                const rua = document.getElementById('cmbRua');
-                txt = txt.substring(1,txt.length-1) // tira as aspas ("txt")
-                const rows = txt.split('\\n');
+                rua.innerHTML = '';
                 for(let i=0; i<rows.length; i++){
                     const opt = document.createElement('option');
-                    opt.innerHTML = rows[i];
+                    opt.innerHTML = rows[i].nome;
+                    opt.value = [rows[i].rua,rows[i].num];
                     rua.appendChild(opt);
                 }
-               
-            })
+
+            }); 
+           
         }
   
     </script>    
