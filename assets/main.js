@@ -250,3 +250,98 @@ function queryDB(params,cod){
 
     });      
 }
+
+
+function valTel(edt){
+    let ok_chr = ['1','2','3','4','5','6','7','8','9','0'];
+    var num = edt.value;
+    var count = 0;
+    var out = '';
+
+    for(i=0;i<num.length;i++){
+        chr = num[i]
+        if(ok_chr.includes(chr)){
+            count++;
+            if(count == 1){
+                out += '(' ;
+            }else if(count == 3){
+                out += ')' ;
+            }else if(count == 7){
+                out = out + '-';
+            }else if(count == 11){
+                out = out.substr(0,5) +" "+out.substr(5,3)+out.substr(9,1)+"-"+out.substr(10,3);
+            }	
+            out += chr;	
+        }
+		
+    }
+    edt.value = out;    
+}
+
+function valCPF(edt){
+    let ok_chr = ['1','2','3','4','5','6','7','8','9','0'];
+    var num = edt.value;
+    var count = 0;
+    var out = '';
+
+    for(i=0;i<num.length;i++){
+        chr = num[i]
+        if(ok_chr.includes(chr)){
+            count++;
+            if(count == 4 || count == 7){
+                out += '.' ;
+            }else if(count == 10){
+                out += '-' ;
+            }
+            out += chr;	
+        }
+		
+    }
+    edt.value = out;
+}
+
+function valRG(edt){
+    let ok_chr = ['1','2','3','4','5','6','7','8','9','0'];
+    var num = edt.value;
+    var count = 0;
+    var out = '';
+
+    for(i=0;i<num.length;i++){
+        chr = num[i]
+        if(ok_chr.includes(chr)){
+            count++;
+            if(count == 3 || count == 6){
+                out += '.' ;
+            }else if(count == 9){
+                out += '-' ;
+            }
+            out += chr;	
+        }
+		
+    }
+    edt.value = out;
+}
+
+function onlyNum(edt,casas=2){
+    let ok_chr = ['1','2','3','4','5','6','7','8','9','0'];
+    var num = edt.value;
+    var afterDot = 0;
+    var out = '';
+
+    for(i=0;i<num.length;i++){
+        chr = num[i];
+        if(afterDot > 0){
+            afterDot++
+            if(afterDot > casas+1){
+                return
+            }
+        }
+        if(ok_chr.includes(chr)){
+            out += chr;
+        }else if((chr =='.' || chr ==',') && afterDot == 0 && out.length > 0){
+            out += '.';
+            afterDot++;
+        }
+        edt.value = out;
+    }
+}

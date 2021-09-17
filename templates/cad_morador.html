@@ -26,19 +26,19 @@
         <label>Nome:</label>
         <input type="text" id="edtNome" maxlength="50">     
         <label>CPF:</label>
-        <input type="text" id="edtCPF" maxlength="14">
+        <input type="text" id="edtCPF" onkeyup="valCPF(this)" maxlength="14">
         <label>RG:</label>
-        <input type="text" id="edtRG" maxlength="12">    
+        <input type="text" id="edtRG" onkeyup="valRG(this)" maxlength="12">    
         <label>Telefone:</label>
-        <input type="text" id="edtTelefone" maxlength="15">
+        <input type="text" id="edtTelefone" onkeyup="valTel(this)" maxlength="15">
         <label>Celular:</label>
-        <input type="text" id="edtCelular" maxlength="15">
+        <input type="text" id="edtCelular" onkeyup="valTel(this)" maxlength="15">
         <label>Email:</label>
         <input type="text" id="edtEmail" maxlength="50">
         <label>Rua</label>
         <select id="cmbRuas"></select>
         <label>Número:</label>
-        <input type="text" id="edtNum" maxlength="5">        
+        <input type="text" id="edtNum" onkeyup="onlyNum(this,0)" maxlength="5">        
         <label>Obs:</label>
         <textarea id="txtObs" rows="10"></textarea>
         <button id="btnSave">Salvar</button>
