@@ -8,7 +8,10 @@
          "4" => "DELETE FROM tb_schedule WHERE y00 = x00 AND y01 = 'x01' ;",
          "5" => "INSERT INTO tb_pessoa (y00, y01, y02, y03, y04, y05, y06, y07, y08, y09, y10) VALUES ('x00','x01','x02','x03','x04','x05','x06','x07','x08','x09','x10');",
          "6" => "INSERT INTO tb_casas (y00, y01, y02) VALUES ('x00', 'x01', 'x02') ;",
-         "7" => "SELECT nome, rua, num FROM tb_pessoa WHERE y00 = 'x00' ;"
+         "7" => "SELECT nome, rua, num FROM tb_pessoa WHERE y00 = 'x00' ;",
+         "8" => "SELECT * FROM tb_ruas;",
+         "9" => "INSERT INTO tb_ruas (y00) VALUES ('x00') ;",
+         "10" => "DELETE FROM tb_ruas WHERE y00='x00' ;"
 
 
     );

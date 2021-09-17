@@ -21,7 +21,7 @@
     <div class="page_form" id="head">
         <h2>CONFIGURAÇÕES</h2>
 
-        <label> Ruas</label>
+        <label> Ruas do Condomínio</label>
         <select id="cmbRuas" size="5"></select>
         <input type="text" id="edtRua">
         <button id="btnRua">Adicionar</button>
@@ -34,20 +34,60 @@
 
 <script>
     const cmbRuas = document.getElementById('cmbRuas');
-    const edtRuas = document.getElementById('edtRua');
-    const btnRuas = document.getElementById('btnRua');
+    const edtNomeRuas = document.getElementById('edtRua');
+    const btnAddRuas = document.getElementById('btnRua');
 
-    btnRuas.addEventListener('click',()=>{ // 
+    loadRuas();
 
-        alert(edtRuas.value)
+    btnAddRuas.addEventListener('click',()=>{
+
+        const params = new Object;
+            params.nome = edtNomeRuas.value;
+
+        const resp = queryDB(params,9);
+
+        resp.then((resolve)=>{
+            loadRuas();
+        }); 
 
     })
 
     cmbRuas.addEventListener('dblclick',()=>{
 
-        alert('teste')
+        if (confirm('Deseja deletar este rua?')) {
+//            alert(cmbRuas.options[cmbRuas.selectedIndex].text)
+
+            const params = new Object;
+            params.id = cmbRuas.value;
+
+            const resp = queryDB(params,10);
+            resp.then((resolve)=>{
+                loadRuas();
+            }); 
+
+        }
 
     })
+
+    function loadRuas(){
+
+        const params = new Object;
+        const resp = queryDB(params,8);
+
+        resp.then((resolve)=>{
+            cmbRuas.innerHTML = '';
+            const rows = JSON.parse(resolve)
+            for(let i=0; i<rows.length; i++){
+                const opt = document.createElement('option');
+                    opt.innerHTML = rows[i].nome;
+                    opt.value = rows[i].id;
+                cmbRuas.appendChild(opt);
+                edtNomeRuas.value = '';
+                cmbRuas.focus();
+            }
+        }); 
+
+    }
 
 
 </script>

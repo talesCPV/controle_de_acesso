@@ -1,23 +1,118 @@
 <template>
     <style>
 
+      td > button{
+        width: 100%;
+        padding: 10px;
+      }
 
-
+      .tblFoto{
+        width: 640px;
+      }
 
     </style>
-    <div class='form-modal'>
-        <main id="screen"></main>
-        <!-- 
-        <textarea rows = '20' id='txtSchedule' > </textarea>
-        <button id="btnSalvar" >Tirar Foto</button>
-        -->
-      </div> 
+
+      <table class="tblFoto">
+        <tr>
+          <td>
+            <video id="webcam" autoplay playsinline width="320" height="240"></video>
+          </td>
+          <td>
+            <canvas id="canvas" class="d-none"></canvas>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <button id="btnTakePic" >Tirar Foto</button>
+          </td>
+          <td>
+            <button id="btnSavePic" >Salvar</button>
+          </td>
+        </tr>
+
+      </table>
+
+      <form action='db/upload.php' method='post'>
+        <input type='file' name='up_file' id="up_file" accept='.jpg' enctype='multipart/form-data'>
+        <input type="hidden" value="teste" name="testetbm">
+
+        <button type="submit"> up</button>
+      </form>
+
+
+
+
 
 </template>
 
 <script>
 
+//class Webcam{constructor(e,t="user",s=null,i=null){this._webcamElement=e,this._webcamElement.width=this._webcamElement.width||640,this._webcamElement.height=this._webcamElement.height||.75*this._webcamElement.width,this._facingMode=t,this._webcamList=[],this._streamList=[],this._selectedDeviceId="",this._canvasElement=s,this._snapSoundElement=i}get facingMode(){return this._facingMode}set facingMode(e){this._facingMode=e}get webcamList(){return this._webcamList}get webcamCount(){return this._webcamList.length}get selectedDeviceId(){return this._selectedDeviceId}getVideoInputs(e){return this._webcamList=[],e.forEach(e=>{"videoinput"===e.kind&&this._webcamList.push(e)}),1==this._webcamList.length&&(this._facingMode="user"),this._webcamList}getMediaConstraints(){var e={};return""==this._selectedDeviceId?e.facingMode=this._facingMode:e.deviceId={exact:this._selectedDeviceId},{video:e,audio:!1}}selectCamera(){for(let e of this._webcamList)if("user"==this._facingMode&&e.label.toLowerCase().includes("front")||"enviroment"==this._facingMode&&e.label.toLowerCase().includes("back")){this._selectedDeviceId=e.deviceId;break}}flip(){this._facingMode="user"==this._facingMode?"enviroment":"user",this._webcamElement.style.transform="",this.selectCamera()}async start(e=!0){return new Promise((t,s)=>{this.stop(),navigator.mediaDevices.getUserMedia(this.getMediaConstraints()).then(i=>{this._streamList.push(i),this.info().then(i=>{this.selectCamera(),e?this.stream().then(e=>{t(this._facingMode)}).catch(e=>{s(e)}):t(this._selectedDeviceId)}).catch(e=>{s(e)})}).catch(e=>{s(e)})})}async info(){return new Promise((e,t)=>{navigator.mediaDevices.enumerateDevices().then(t=>{this.getVideoInputs(t),e(this._webcamList)}).catch(e=>{t(e)})})}async stream(){return new Promise((e,t)=>{navigator.mediaDevices.getUserMedia(this.getMediaConstraints()).then(t=>{this._streamList.push(t),this._webcamElement.srcObject=t,"user"==this._facingMode&&(this._webcamElement.style.transform="scale(-1,1)"),this._webcamElement.play(),e(this._facingMode)}).catch(e=>{console.log(e),t(e)})})}stop(){this._streamList.forEach(e=>{e.getTracks().forEach(e=>{e.stop()})})}snap(){if(null!=this._canvasElement){null!=this._snapSoundElement&&this._snapSoundElement.play(),this._canvasElement.height=this._webcamElement.scrollHeight,this._canvasElement.width=this._webcamElement.scrollWidth;let e=this._canvasElement.getContext("2d");return"user"==this._facingMode&&(e.translate(this._canvasElement.width,0),e.scale(-1,1)),e.clearRect(0,0,this._canvasElement.width,this._canvasElement.height),e.drawImage(this._webcamElement,0,0,this._canvasElement.width,this._canvasElement.height),this._canvasElement.toDataURL("image/png")}throw"canvas element is missing"}}
+  
+  const webcamElement = document.getElementById('webcam');
+  const canvasElement = document.getElementById('canvas');
+  const snapSoundElement = document.getElementById('snapSound');
+  const webcam = new Webcam(webcamElement, 'user', canvasElement, snapSoundElement);
+  const btnTakePic = document.getElementById('btnTakePic');
+  const btnSavePic = document.getElementById('btnSavePic');
 
+
+  webcam.start();
+
+
+  btnSavePic.addEventListener('click',()=>{
+//    webcam.stop();
+
+    let input = document.createElement("input");
+    input.type = "file";
+    input.name = "up_file2";
+    input.src = canvasElement.toDataURL();
+
+    file = document.getElementById('up_file').files[0];
+
+    var dataURL = canvas.toDataURL();
+
+    console.log(file)
+    console.log(input)
+
+    const data = new URLSearchParams();        
+      data.append("up_file", file);
+      data.append("filename", 'teste.png');
+      data.append("token", localStorage.getItem("token"));
+
+    upImage(data);
+
+  })
+
+  btnTakePic.addEventListener('click',()=>{
+    let picture = webcam.snap();
+  })
+
+  function upImage(data){
+
+    const myRequest = new Request("db/upload.php",{
+        method : "POST",
+        body : data
+    });
+
+    return new Promise((resolve,reject) =>{
+
+      fetch(myRequest)
+      .then(function (response){
+
+          if (response.status === 200) { 
+              resolve(response);
+              
+          } else { 
+              reject(new Error("Houve algum erro na comunicação com o servidor"));
+             
+          } 
+
+      });            
+
+    });  
+
+  }
 
 
 

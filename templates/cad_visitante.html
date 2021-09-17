@@ -49,10 +49,10 @@
   
     <script>
 
-        loadCombo();
+        loadMorador();
+        
         document.getElementById('btnFoto').addEventListener('click',()=>{
-            openHTML('foto.html','pop-up','TIRAR FOTO DO VISITANTE')
-
+            openHTML('foto.html','pop-up','FOTO DO VISITANTE')
         })
 
         document.getElementById('btnSave').addEventListener('click',()=>{
@@ -96,15 +96,14 @@
 
         })
  
-        function loadCombo(){
+        function loadMorador(){
 
             const params = new Object;
                 params.status = "MORADOR"
 
             const resp = queryDB(params,7);
 
-            resp.then((resolve)=>{
-                console.log(resolve)            
+            resp.then((resolve)=>{        
                 const rua = document.getElementById('cmbMorador');                
                 const rows =  JSON.parse(resolve);
 
