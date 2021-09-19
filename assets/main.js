@@ -258,35 +258,38 @@ function upImage(cnv, filename='temp'){ // receive canvas
 
     filename += ".png";
 
-    var dataURL = cnv.toDataURL().replace(/^data:image\/png;base64,/, "");
+        if(hasFoto(cnv)){
+            var dataURL = cnv.toDataURL().replace(/^data:image\/png;base64,/, "");
 
-    const data = new URLSearchParams();        
-      data.append("file", dataURL);
-      data.append("filename", filename);
-      data.append("token", localStorage.getItem("token"));
-
-    const myRequest = new Request("db/upload.php",{
-        method : "POST",
-        body : data
-    });
-
-    return new Promise((resolve,reject) =>{
-
-      fetch(myRequest)
-      .then(function (response){
-
-          if (response.status === 200) { 
-              resolve(response);              
-              
-          } else { 
-              reject(new Error("Houve algum erro na comunicação com o servidor"));
-             
-          } 
-
-      });            
-
-    });  
-
+            const data = new URLSearchParams();        
+              data.append("file", dataURL);
+              data.append("filename", filename);
+              data.append("token", localStorage.getItem("token"));
+        
+            const myRequest = new Request("db/upload.php",{
+                method : "POST",
+                body : data
+            });
+        
+            return new Promise((resolve,reject) =>{
+        
+              fetch(myRequest)
+              .then(function (response){
+        
+                  if (response.status === 200) { 
+                      resolve(response);              
+                      
+                  } else { 
+                      reject(new Error("Houve algum erro na comunicação com o servidor"));
+                     
+                  } 
+        
+              });            
+        
+            });  
+        }else{
+            alert("Não foi possível salvar a foto")
+        }
 }
 
 function clearCanvas(cnv){
@@ -365,6 +368,19 @@ function valRG(edt){
 		
     }
     edt.value = out;
+}
+
+function valCampos(obj){
+    for(var i = 0; i<obj.length; i++){
+
+        if(obj[i].value=="")
+          {
+              alert("Os campos com * são obrigatórios!");
+              obj[i].focus();
+              return false;
+          }
+    }
+    return true;
 }
 
 function onlyNum(edt,casas=2){

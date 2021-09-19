@@ -46,7 +46,7 @@
     <h2>CADASTRO DE MORADORES</h2>
 
     <div class="cad-morador">
-        <label style="grid-area: lbl-nome;">Nome:</label>
+        <label style="grid-area: lbl-nome;">Nome: *</label>
         <input style="grid-area: edt-nome;" type="text" id="edtNome" maxlength="50">     
         <label style="grid-area: lbl-cpf;">CPF:</label>
         <input style="grid-area: edt-cpf;" type="text" id="edtCPF" onkeyup="valCPF(this)" maxlength="14">
@@ -91,41 +91,43 @@
             const obs = document.getElementById('txtObs');
             const foto = document.getElementById('canvas');
 
-            let filename = null;
-            if(hasFoto(foto)){
-                const today = new Date();
-                filename = today.toString().substr(0,24);
-                upImage(foto,filename);
+            if(valCampos([nome])){
+                let filename = null;
+                if(hasFoto(foto)){
+                    const today = new Date();
+                    filename = today.toString().substr(0,24);
+                    upImage(foto,filename);
+                }
+
+                const params = new Object;
+                    params.nome = nome.value;
+                    params.rua = rua.options[rua.selectedIndex].text;
+                    params.num = num.value;
+                    params.CPF = cpf.value;
+                    params.RG = rg.value;
+                    params.status = "MORADOR";
+                    params.foto = filename;
+                    params.email = email.value;
+                    params.tel = telefone.value;
+                    params.cel = celular.value;
+                    params.obs = obs.value;                
+
+                const myPromisse = queryDB(params,5);            
+
+                myPromisse.then((resolve)=>{         
+                    alert('Cadastro Salvo');
+                    nome.value = '';
+                    clearCanvas(foto);
+                    cpf.value = '';
+                    rg.value = '';
+                    email.value = '';
+                    telefone.value = '';
+                    celular.value = '';
+                    obs.value = '';
+                    nome.focus();
+
+                });    
             }
-
-            const params = new Object;
-                params.nome = nome.value;
-                params.rua = rua.options[rua.selectedIndex].text;
-                params.num = num.value;
-                params.CPF = cpf.value;
-                params.RG = rg.value;
-                params.status = "MORADOR";
-                params.foto = filename;
-                params.email = email.value;
-                params.tel = telefone.value;
-                params.cel = celular.value;
-                params.obs = obs.value;                
-
-            const myPromisse = queryDB(params,5);            
-
-            myPromisse.then((resolve)=>{         
-                alert('Cadastro Salvo');
-                nome.value = '';
-                clearCanvas(foto);
-                cpf.value = '';
-                rg.value = '';
-                email.value = '';
-                telefone.value = '';
-                celular.value = '';
-                obs.value = '';
-                nome.focus();
-
-            });             
 
         })
  

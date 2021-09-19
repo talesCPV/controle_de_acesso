@@ -4,7 +4,7 @@
  
     <style>
   
-        .cad-visitante{
+        .cad-funcionario{
             display : grid;
             grid-template-areas:
             ".        lbl-nome lbl-nome"
@@ -15,38 +15,34 @@
             "cnv-foto edt-tel edt-cel"
             "cnv-foto lbl-email lbl-email"
             "cnv-foto edt-email edt-email"
-            "cnv-foto lbl-morador lbl-morador"
-            "btn-foto cmb-morador cmb-morador"
+            "cnv-foto . ."
+            "btn-foto . ."
             "lbl-obs lbl-obs lbl-obs"
             "txt-obs txt-obs txt-obs"
             "btn-save btn-save btn-save";           
             gap: 5px;
         }
 
-        .cad-visitante > input[type=text], .cad-visitante > textarea{
+        .cad-funcionario > input[type=text], .cad-funcionario > textarea{
             padding: 5px;
         }
 
-        .cad-visitante > canvas{
+        .cad-funcionario > canvas{
             height: 100%;
             width: 100%;
-        }
-
-        #cmbMorador{
-            margin: 15px 0;
         }
 
   
     </style>
 
-    <h2>CADASTRO DE VISITANTES</h2>
+    <h2>CADASTRO DE FUNCIONÁRIO</h2>
 
-    <div class="cad-visitante">
+    <div class="cad-funcionario">
         <label style="grid-area: lbl-nome;">Nome: *</label>
         <input style="grid-area: edt-nome;" type="text" id="edtNome" maxlength="50">     
-        <label style="grid-area: lbl-cpf;">CPF:</label>
+        <label style="grid-area: lbl-cpf;">CPF: *</label>
         <input style="grid-area: edt-cpf;" type="text" id="edtCPF" onkeyup="valCPF(this)" maxlength="14">
-        <label style="grid-area: lbl-rg;">RG:</label>
+        <label style="grid-area: lbl-rg;">RG: *</label>
         <input style="grid-area: edt-rg;" type="text" id="edtRG" onkeyup="valRG(this)" maxlength="12">    
         <label style="grid-area: lbl-tel;">Telefone:</label>
         <input style="grid-area: edt-tel;" type="text" id="edtTelefone" onkeyup="valTel(this)" maxlength="15">
@@ -56,8 +52,6 @@
         <input style="grid-area: edt-email;" type="text" id="edtEmail" maxlength="50">
         <canvas style="grid-area: cnv-foto;"id="canvas" class="d-none"></canvas>
         <button style="grid-area: btn-foto;" id="btnFoto">Foto</button>
-        <label style="grid-area: lbl-morador;">Morador</label>
-        <select style="grid-area: cmb-morador;" id="cmbMorador"></select>
         <label style="grid-area: lbl-obs;">Obs:</label>
         <textarea style="grid-area: txt-obs;" id="txtObs" rows="10"></textarea>
         <button style="grid-area: btn-save;" id="btnSave">Salvar</button>
@@ -68,16 +62,12 @@
   
     <script>
 
-        loadMorador();
-
-
         document.getElementById('btnFoto').addEventListener('click',()=>{
             openHTML('foto.html','pop-up','FOTO DO VISITANTE')
         })
 
         document.getElementById('btnSave').addEventListener('click',()=>{
             const nome = document.getElementById('edtNome');
-            const end = document.getElementById('cmbMorador').value.split(',');
             const cpf = document.getElementById('edtCPF');
             const rg = document.getElementById('edtRG');
             const email = document.getElementById('edtEmail');
@@ -86,7 +76,7 @@
             const obs = document.getElementById('txtObs');
             const foto = document.getElementById('canvas');
 
-            if(valCampos([nome])){
+            if(valCampos([nome,cpf,rg])){
                 let filename = null;
                 if(hasFoto(foto)){
                     const today = new Date();
@@ -96,11 +86,11 @@
 
                 const params = new Object;
                     params.nome = nome.value;
-                    params.rua = end[1];
-                    params.num = end[0];
+                    params.rua = "PORTARIA";
+                    params.num = '0';
                     params.CPF = cpf.value;
                     params.RG = rg.value;
-                    params.status = "VISITANTE";
+                    params.status = "FUNCIONÀRIO";
                     params.foto = filename;
                     params.email = email.value;
                     params.tel = telefone.value;
@@ -122,32 +112,13 @@
                     nome.focus();
 
                 });     
-            }        
+            }else{
+                alert("erro")
+            }
 
         })
  
-        function loadMorador(){
 
-            const params = new Object;
-                params.status = "MORADOR"
-
-            const resp = queryDB(params,7);
-
-            resp.then((resolve)=>{        
-                const rua = document.getElementById('cmbMorador');                
-                const rows =  JSON.parse(resolve);
-
-                rua.innerHTML = '';
-                for(let i=0; i<rows.length; i++){
-                    const opt = document.createElement('option');
-                    opt.innerHTML = rows[i].nome;
-                    opt.value = [rows[i].num,rows[i].rua];
-                    rua.appendChild(opt);
-                }
-
-            }); 
-           
-        }
   
     </script>    
   
