@@ -1,7 +1,7 @@
 {
 	"modulos": [
 		{
-            "nome": "Ocorrências",
+            "nome": "Livro de Ocorrências",
             "link": "#",
             "icone": "fa fa-home",
             "id": "menu-ocorrencias",
@@ -93,6 +93,30 @@
                 }
             ]
         },
+		{
+            "nome": "Consultas",
+            "link": "#",
+            "icone": "fa fa-home",
+            "id": "menu-consultas",
+            "template" : "",
+            "autoexec" : false,
+            "window" : "self",
+            "title" : "",
+            "perm": [10,1],
+            "itens": [
+                {
+                    "nome": "Cadastros",
+                    "link": "",
+                    "id": "menu-pesq_pessoas",
+                    "template" : "pesq_pessoas.html",
+                    "window" : "self",
+                    "title" : "",
+                    "params": [],
+                    "icone": "fa fa-archive",
+                    "perm": [10,1]
+                }
+            ]
+		},        
 		{
             "nome": "Configurações",
             "link": "#",

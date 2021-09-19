@@ -54,6 +54,30 @@ li ul{
   padding-left: 5px;
 }
 
+h2{
+    width: 100%;
+    text-align: center;
+}
+
+button{
+    padding: 10px;
+    border: solid 5px rgb(95, 95, 253);
+    border-radius: 10px;
+    background-color: rgb(160, 157, 157,0);
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover{
+    border: solid 5px rgb(8, 8, 250);
+}
+
+canvas{
+    padding: 10px;
+    border: solid 5px rgb(95, 95, 253);
+    border-radius: 10px;
+}
+
 .wrapper{
     height: 100%;
     display: flex;

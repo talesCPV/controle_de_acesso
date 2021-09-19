@@ -1,29 +1,18 @@
 <?php
 
-echo "antes<br>" ;
+  if (IsSet($_POST["file"]) && IsSet($_POST["filename"])){  
 
-foreach ($_POST as $key => $value) {
+    $file = $_POST["file"];
+    $filename = '../fotos/'.$_POST["filename"];
+    $data = base64_decode($file);
 
-    echo $key.":".$value."<br>";
-}
+    file_put_contents($filename, $data);
+    return true;
 
-echo $_FILES["filename"]."<br>" ;
+  }else{
 
-if (IsSet($_FILES["filename"])){  
-
-    echo $file_name;
-
-}
-
-  if (IsSet($_FILES["up_file"])){    
-
-    echo "entrou<br>" ;
-
-    $file_name = $_POST["filename"];;
-
-
+    return false;
     
-    copy($_FILES["up_file"]["tmp_name"],$file_name);
-
   }
+
 ?>

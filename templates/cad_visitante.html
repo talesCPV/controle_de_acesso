@@ -4,76 +4,103 @@
  
     <style>
   
-        h2{
-            width: 100%;
-            text-align: center;
+        .cad-visitante{
+            display : grid;
+            grid-template-areas:
+            ".        lbl-nome lbl-nome"
+            "cnv-foto edt-nome edt-nome"
+            "cnv-foto lbl-cpf lbl-rg"
+            "cnv-foto edt-cpf edt-rg"
+            "cnv-foto lbl-tel lbl-cel"
+            "cnv-foto edt-tel edt-cel"
+            "cnv-foto lbl-email lbl-email"
+            "cnv-foto edt-email edt-email"
+            "cnv-foto lbl-morador lbl-morador"
+            "btn-foto cmb-morador cmb-morador"
+            "lbl-obs lbl-obs lbl-obs"
+            "txt-obs txt-obs txt-obs"
+            "btn-save btn-save btn-save";           
+            gap: 5px;
         }
 
-      .page_form{
-        display : flex;
-        flex-direction: column;
-      }
-  
-      .page_form > label, .page_form > button {
-          margin-top: 15px;
-      }
+        .cad-visitante > input[type=text], .cad-visitante > textarea{
+            padding: 5px;
+        }
+
+        .cad-visitante > canvas{
+            height: 100%;
+            width: 100%;
+        }
+
+        #cmbMorador{
+            margin: 15px 0;
+        }
+
   
     </style>
-  
-    <div class="page_form" id="head">
-        <h2>CADASTRO DE VISITANTES</h2>
 
-        <label>Nome:</label>
-        <input type="text" id="edtNome" maxlength="50">     
-        <label>CPF:</label>
-        <input type="text" id="edtCPF" maxlength="14">
-        <label>RG:</label>
-        <input type="text" id="edtRG" maxlength="12">    
-        <label>Telefone:</label>
-        <input type="text" id="edtTelefone" maxlength="15">
-        <label>Celular:</label>
-        <input type="text" id="edtCelular" maxlength="15">
-        <label>Email:</label>        
-        <input type="text" id="edtEmail" maxlength="50">
-        <label>Foto</label>
-        <button id="btnFoto">Tirar Foto</button>
-        <input type="hidden" id="hdnFoto" value='' maxlength="5">        
-        <label>Morador</label>
-        <select id="cmbMorador"></select>
-        <label>Obs:</label>
-        <textarea id="txtObs" rows="10"></textarea>
-        <button id="btnSave">Salvar</button>
+    <h2>CADASTRO DE VISITANTES</h2>
+
+    <div class="cad-visitante">
+        <label style="grid-area: lbl-nome;">Nome:</label>
+        <input style="grid-area: edt-nome;" type="text" id="edtNome" maxlength="50">     
+        <label style="grid-area: lbl-cpf;">CPF:</label>
+        <input style="grid-area: edt-cpf;" type="text" id="edtCPF" onkeyup="valCPF(this)" maxlength="14">
+        <label style="grid-area: lbl-rg;">RG:</label>
+        <input style="grid-area: edt-rg;" type="text" id="edtRG" onkeyup="valRG(this)" maxlength="12">    
+        <label style="grid-area: lbl-tel;">Telefone:</label>
+        <input style="grid-area: edt-tel;" type="text" id="edtTelefone" onkeyup="valTel(this)" maxlength="15">
+        <label style="grid-area: lbl-cel;">Celular:</label>
+        <input style="grid-area: edt-cel;" type="text" id="edtCelular" onkeyup="valTel(this)" maxlength="15">
+        <label style="grid-area: lbl-email;">Email:</label>        
+        <input style="grid-area: edt-email;" type="text" id="edtEmail" maxlength="50">
+        <canvas style="grid-area: cnv-foto;"id="canvas" class="d-none"></canvas>
+        <button style="grid-area: btn-foto;" id="btnFoto">Foto</button>
+        <label style="grid-area: lbl-morador;">Morador</label>
+        <select style="grid-area: cmb-morador;" id="cmbMorador"></select>
+        <label style="grid-area: lbl-obs;">Obs:</label>
+        <textarea style="grid-area: txt-obs;" id="txtObs" rows="10"></textarea>
+        <button style="grid-area: btn-save;" id="btnSave">Salvar</button>
     </div>
-  
+
+
     </template>
   
     <script>
 
         loadMorador();
-        
+
+
         document.getElementById('btnFoto').addEventListener('click',()=>{
             openHTML('foto.html','pop-up','FOTO DO VISITANTE')
         })
 
         document.getElementById('btnSave').addEventListener('click',()=>{
             const nome = document.getElementById('edtNome');
-            const rua = document.getElementById('cmbMorador');
-            const num = document.getElementById('edtNum');
+            const end = document.getElementById('cmbMorador').value.split(',');
             const cpf = document.getElementById('edtCPF');
             const rg = document.getElementById('edtRG');
             const email = document.getElementById('edtEmail');
             const telefone = document.getElementById('edtTelefone');
             const celular = document.getElementById('edtCelular');
             const obs = document.getElementById('txtObs');
+            const foto = document.getElementById('canvas');
+
+            let filename = null;
+            if(hasFoto(foto)){
+                const today = new Date();
+                filename = today.toString().substr(0,24);
+                upImage(foto,filename);
+            }
 
             const params = new Object;
                 params.nome = nome.value;
-                params.rua = rua.value;
-                params.num = num.value;
+                params.rua = end[1];
+                params.num = end[0];
                 params.CPF = cpf.value;
                 params.RG = rg.value;
-                params.status = "MORADOR";
-                params.foto = null;
+                params.status = "VISITANTE";
+                params.foto = filename;
                 params.email = email.value;
                 params.tel = telefone.value;
                 params.cel = celular.value;
@@ -84,7 +111,7 @@
             myPromisse.then((resolve)=>{         
                 alert('Cadastro Salvo');
                 nome.value = '';
-                num.value = '';
+                clearCanvas(foto);
                 cpf.value = '';
                 rg.value = '';
                 email.value = '';
@@ -92,6 +119,7 @@
                 celular.value = '';
                 obs.value = '';
                 nome.focus();
+
             });             
 
         })
@@ -111,7 +139,7 @@
                 for(let i=0; i<rows.length; i++){
                     const opt = document.createElement('option');
                     opt.innerHTML = rows[i].nome;
-                    opt.value = [rows[i].rua,rows[i].num];
+                    opt.value = [rows[i].num,rows[i].rua];
                     rua.appendChild(opt);
                 }
 
