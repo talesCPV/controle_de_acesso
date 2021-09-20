@@ -1,15 +1,15 @@
 <template>
 
     <style>
-  
-        h2{
-            width: 100%;
-            text-align: center;
-        }
 
         .page_form{
+            padding: 20px;
+        }
+
+        .page_form > *{
             display : flex;
             flex-direction: column;
+            width: 100%;
         }
     
         .page_form > label, .page_form > button, .page_form > input {
@@ -18,13 +18,24 @@
   
     </style>
 
-    <div class="page_form" id="head">
-        <h2>CONFIGURAÇÕES</h2>
+    <h2>CONFIGURAÇÕES</h2>
 
-        <label> Ruas do Condomínio</label>
-        <select id="cmbRuas" size="5"></select>
-        <input type="text" id="edtRua">
-        <button id="btnRua">Adicionar</button>
+
+    <div class="tab-bar">
+        <div id="tab-0" > Ruas</div>
+        <div id="tab-1" >Câmeras</div>
+    </div>
+
+    <div class="tab-screen">        
+        <div class="page_form tab sub-tab-0">
+            <label> Ruas do Condomínio</label>
+            <select id="cmbRuas" size="5"></select>
+            <input type="text" id="edtRua">
+            <button id="btnRua">Adicionar</button>
+        </div>
+        <div class="page_form tab sub-tab-1">
+            <p>Aqui podemos colocar outras abas, como cadastro de novos usuarios do sistema, configuração das câmeras de video e outras configurações gerais</p>
+        </div>
 
     </div>
 
@@ -38,6 +49,7 @@
     const btnAddRuas = document.getElementById('btnRua');
 
     loadRuas();
+    startTabs("tab-0");
 
     btnAddRuas.addEventListener('click',()=>{
 

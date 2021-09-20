@@ -406,3 +406,35 @@ function onlyNum(edt,casas=2){
         edt.value = out;
     }
 }
+
+function startTabs(tab){
+    const x = document.querySelector(".tab-bar").childNodes;
+    for (let i = 0; i < x.length; i++) {
+        x[i].addEventListener('click',()=>{
+            openTab(x[i].id)
+        })
+  
+    }
+    openTab(tab);
+}
+ 
+function openTab(tab) {
+
+    let x = document.querySelector(".tab-screen").childNodes;
+    for (let i = 0; i < x.length; i++) {
+        if(x[i].tagName == 'DIV') {
+            x[i].style.display = "none";  
+        }
+    }
+    document.querySelector(".sub-"+tab).style.display = "block";
+
+    x = document.querySelector(".tab-bar").childNodes;
+    for (let i = 0; i < x.length; i++) {
+        if(x[i].tagName == 'DIV') {
+            x[i].style.background = "white";  
+            x[i].style.color = "rgba(39, 75, 63,0.8)";         
+        }
+    }
+    document.getElementById(tab).style.background = "rgba(39, 75, 63,0.8)";
+    document.getElementById(tab).style.color = "white";     
+}

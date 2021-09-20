@@ -33,7 +33,7 @@
 
     </style>
 
-    <h2>Pesquisas</h2>
+    <h2>Consulta de Pessoas Cadastradas</h2>
 
     <div class="frm-border pesq-pessoas">
         <label id="lblBusca">Busca por:</label>
@@ -56,6 +56,13 @@
     </template>
   
     <script>
+
+        document.getElementById('edtBusca').addEventListener('keyup',(event)=>{
+          if(event.keyCode === 13){
+            document.getElementById('btnBusca').click();
+          }
+        })
+
         document.getElementById('btnBusca').addEventListener('click',()=>{
             cmbBusca = document.getElementById('cmbBusca');
             edtBusca = document.getElementById('edtBusca');
@@ -70,7 +77,6 @@
                 status = "";
             }
 
-
             const params = new Object;
                     params.nome = edtBusca.value;
                     params.status = status;
@@ -78,25 +84,28 @@
             const myPromisse = queryDB(params,11);   
 
             myPromisse.then((resolve)=>{         
-                const data = JSON.parse(resolve)
-                tblPessoas.innerHTML = "<tr><th>Cod.</th><th>Nome</th><th>Rua</th><th>Num.</th><th>Status</th></tr>";
-                const showFields = ['id','nome','rua','num','status']
-                for(let i=0; i<data.length; i++){
-                    const obj = Object.entries(data[i])
-                    const row = document.createElement('tr');                    
-                    for(let j=0; j<obj.length; j++){
-                        const col = document.createElement('td');
-                        col.innerHTML = obj[j][1];
-                        if(!showFields.includes(obj[j][0])){
-                            col.style.display = "none";
+                if(resolve != ""){
+                    const data = JSON.parse(resolve)
+                    tblPessoas.innerHTML = "<tr><th>Cod.</th><th>Nome</th><th>Rua</th><th>Num.</th><th>Status</th></tr>";
+                    const showFields = ['id','nome','rua','num','status','telefone'];
+                    for(let i=0; i<data.length; i++){
+                        const obj = Object.entries(data[i])
+                        const row = document.createElement('tr');                    
+                        for(let j=0; j<obj.length; j++){
+                            const col = document.createElement('td');
+                            col.innerHTML = obj[j][1];
+                            if(!showFields.includes(obj[j][0])){
+                                col.style.display = "none";
+                            }
+                            row.appendChild(col);
                         }
-                        row.appendChild(col);
-                        console.log(obj[j]);
-                    }
-                    tblPessoas.appendChild(row)
-                    console.log(data[i]);
+                        tblPessoas.appendChild(row)
 
+                    }
+                }else{
+                    tblPessoas.innerHTML = "<tr><th>Nenhum registro encontrado.</th></tr>";
                 }
+
 
 
 
@@ -105,9 +114,6 @@
             }); 
 
         })
-
-
-
 
     </script>    
   
