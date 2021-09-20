@@ -1,0 +1,114 @@
+
+
+<template>
+ 
+    <style>
+  
+        .pesq-pessoas{
+            display : grid;
+            grid-template-columns: 1fr 2fr 3fr 2fr;
+            grid-template-rows: 50px;
+            gap: 5px;
+        }
+ 
+        .pesq-pessoas > *{
+            padding: 10px;
+        }
+
+        #btnBusca{
+            margin-top: 0;
+            height: 100%;
+        }
+
+        #frm-pesq-pessoas{
+            height: 90%;
+        }
+
+        #tbl-pesq-pessoas{
+            width: 100%;
+            font-size: 30px;     
+        }
+
+
+
+    </style>
+
+    <h2>Pesquisas</h2>
+
+    <div class="frm-border pesq-pessoas">
+        <label id="lblBusca">Busca por:</label>
+        <select  id="cmbBusca">
+            <option value="1">Moradores</option>
+            <option value="2">Visitantes</option>
+            <option value="3">Funcionários</option>
+            <option value="4">Todos</option>
+        </select>
+
+        <input  type="text" id="edtBusca" placeholder="Digite o Nome">
+        <button  id="btnBusca">Busca</button>
+
+    </div>
+  
+    <div  class="frm-border" id="frm-pesq-pessoas">
+        <table id="tbl-pesq-pessoas"></table>
+    </div>
+
+    </template>
+  
+    <script>
+        document.getElementById('btnBusca').addEventListener('click',()=>{
+            cmbBusca = document.getElementById('cmbBusca');
+            edtBusca = document.getElementById('edtBusca');
+            tblPessoas = document.getElementById('tbl-pesq-pessoas');
+
+            let status = "MORADOR"
+            if(cmbBusca.value == "2"){
+                status = "VISITANTE"
+            }else if(cmbBusca.value == "3"){
+                status = "FUNCIONÁRIO";
+            }else if(cmbBusca.value == "4"){
+                status = "";
+            }
+
+
+            const params = new Object;
+                    params.nome = edtBusca.value;
+                    params.status = status;
+       
+            const myPromisse = queryDB(params,11);   
+
+            myPromisse.then((resolve)=>{         
+                const data = JSON.parse(resolve)
+                tblPessoas.innerHTML = "<tr><th>Cod.</th><th>Nome</th><th>Rua</th><th>Num.</th><th>Status</th></tr>";
+                const showFields = ['id','nome','rua','num','status']
+                for(let i=0; i<data.length; i++){
+                    const obj = Object.entries(data[i])
+                    const row = document.createElement('tr');                    
+                    for(let j=0; j<obj.length; j++){
+                        const col = document.createElement('td');
+                        col.innerHTML = obj[j][1];
+                        if(!showFields.includes(obj[j][0])){
+                            col.style.display = "none";
+                        }
+                        row.appendChild(col);
+                        console.log(obj[j]);
+                    }
+                    tblPessoas.appendChild(row)
+                    console.log(data[i]);
+
+                }
+
+
+
+
+
+            }); 
+
+        })
+
+
+
+
+    </script>    
+  
+</html>

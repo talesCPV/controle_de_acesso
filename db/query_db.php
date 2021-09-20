@@ -11,7 +11,8 @@
          "7" => "SELECT nome, rua, num FROM tb_pessoa WHERE y00 = 'x00' ;",
          "8" => "SELECT * FROM tb_ruas;",
          "9" => "INSERT INTO tb_ruas (y00) VALUES ('x00') ;",
-         "10" => "DELETE FROM tb_ruas WHERE y00='x00' ;"
+         "10" => "DELETE FROM tb_ruas WHERE y00='x00' ;",
+         "11" => "SELECT * FROM tb_pessoa WHERE y00 LIKE '%x00%' AND y01 LIKE '%x01%';"
 
 
     );

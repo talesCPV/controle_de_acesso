@@ -78,6 +78,13 @@ canvas{
     border-radius: 10px;
 }
 
+.frm-border{
+    padding: 10px;
+    border: solid 5px rgb(95, 95, 253);
+    border-radius: 10px;
+    margin: 10px;
+}
+
 .wrapper{
     height: 100%;
     display: flex;
@@ -238,7 +245,7 @@ li a:hover{
     /*background-color: rgb(3, 43, 43);*/
     width: 100vw;
  /*   height: calc(100vh - 200px);*/
-    margin: 60px auto;
+    margin: 0 auto 20px auto;
     /*margin-bottom: 900px;*/
     padding: 50px;
     border-radius: 5px;
