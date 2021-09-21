@@ -86,6 +86,7 @@
     const foto = document.getElementById('canvas');
 
     loadRuas();
+    blockFields(true);
 
     nome.value = data[1];
     num.value = data[3];
@@ -99,6 +100,13 @@
 
     console.log(data);
 
+    function blockFields(on_off){
+        const x = document.querySelector(".grid-pessoas").childNodes;
+        for (let i = 0; i < x.length; i++) {
+            x[i].disabled = on_off;            
+        }
+    }
+
     function loadRuas(){
 
         const params = new Object;
@@ -111,9 +119,9 @@
                 const opt = document.createElement('option');
                     opt.innerHTML = rows[i].nome;
                     opt.value = rows[i].id;
-                    if(data[2] == rows[i].nome){
-                        opt.selected = true;
-                    }
+                if(data[2] == rows[i].nome){
+                    opt.selected = true;
+                }
                 cmbRuas.appendChild(opt);
             }
 
