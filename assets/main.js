@@ -154,6 +154,7 @@ function openMenu(){
 
         .then((json)=>{ // montagem do menu
             const menu = JSON.parse(json)
+            const perm = new Object;
             let list = document.createElement('ul');
             for(let index=0; index< menu.length; index++){
                 const item = menu[index];
@@ -166,6 +167,7 @@ function openMenu(){
                     ul.className = "sub-menu";
                 if(item.itens.length > 0){
                     for(let i=0; i< item.itens.length; i++){
+                        perm[item.itens[i].template] = [item.itens[i].perm,item.itens[i].edit];
                         const sub_li = document.createElement('li');
                         const sub_a = document.createElement('a');
                         sub_a.innerHTML = item.itens[i].nome;
@@ -176,6 +178,7 @@ function openMenu(){
                         ul.appendChild(sub_li);
                     }
                 }else{
+                    perm[item.template] = [item.perm,item.edit];
                     li.addEventListener('click',()=>{
                         openHTML(item.template,item.window,item.title);
                     });
@@ -189,7 +192,7 @@ function openMenu(){
                     openHTML(item.template,item.window,item.title);
                 }                    
             }
-
+            localStorage.setItem("perm",JSON.stringify(perm));
         });
             
 

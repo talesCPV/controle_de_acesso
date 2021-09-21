@@ -31,7 +31,7 @@
 
     </style>
 
-    <h2>Consulta de Pessoas Cadastradas</h2>
+    <h2>Consulta de Cadastros</h2>
 
     <div class="frm-border pesq-pessoas">
         <label id="lblBusca">Busca por:</label>
@@ -80,7 +80,7 @@
             const params = new Object;
                     params.nome = edtBusca.value;
                     params.status = status;
-       
+
             const myPromisse = queryDB(params,11);   
 
             myPromisse.then((resolve)=>{         
@@ -99,7 +99,7 @@
                             }
                             row.appendChild(col);
                         }
-                        
+
                         row.addEventListener('click',(event)=>{
                             let target = event.target;
                                 while (target.nodeName != 'TR') {
@@ -112,7 +112,7 @@
                                 for(let j=0; j<dataRow.length; j++){
                                     out += dataRow[j].innerHTML+"|"
                                 }
-                                openHTML("show_cad.html",'PopUp', dataRow[1].innerHTML, out );
+                                openHTML("show_cad.html",'PopUp', dataRow[1].innerHTML, out);
 
                         })
 

@@ -10,6 +10,7 @@
             "window" : "self",
             "title" : "",
             "perm": [10,1],
+            "edit":[],
             "itens": []
 		},
 		{
@@ -22,6 +23,7 @@
             "window" : "self",
             "title" : "",
             "perm": [10,1],
+            "edit":[],
             "itens": [
                 {
                     "nome": "Moradores",
@@ -32,7 +34,8 @@
                     "title" : "Cadastro de Moradores",
                     "params": [],
                     "icone": "fa fa-archive",
-                    "perm": [10]
+                    "perm": [10],
+                    "edit":[]
                 },
                 {
                     "nome": "Visitantes",
@@ -43,7 +46,8 @@
                     "title" : "",
                     "params": [],
                     "icone": "fa fa-archive",
-                    "perm": [10,1]
+                    "perm": [10,1],
+                    "edit":[]
                 },
                 {
                     "nome": "Funcionários",
@@ -54,7 +58,8 @@
                     "title" : "",
                     "params": [],
                     "icone": "fa fa-archive",
-                    "perm": [10]
+                    "perm": [10],
+                    "edit":[]
                 }
             ]
 		},
@@ -68,6 +73,7 @@
             "window" : "self",
             "title" : "",
             "perm": [10,1],
+            "edit" : [],
             "itens": [
                 {
                     "nome": "Histórico",
@@ -78,7 +84,8 @@
                     "title" : "",
                     "params": [],
                     "icone": "fa fa-archive",
-                    "perm": [10]
+                    "perm": [10],
+                    "edit":[]
                 },
                 {
                     "nome": "Novo acesso",
@@ -89,7 +96,8 @@
                     "title" : "",
                     "params": [],
                     "icone": "fa fa-archive",
-                    "perm": [10,1]
+                    "perm": [10,1],
+                    "edit":[]
                 }
             ]
         },
@@ -103,6 +111,7 @@
             "window" : "self",
             "title" : "",
             "perm": [10,1],
+            "edit" : [],
             "itens": [
                 {
                     "nome": "Cadastros",
@@ -113,7 +122,8 @@
                     "title" : "",
                     "params": [],
                     "icone": "fa fa-archive",
-                    "perm": [10,1]
+                    "perm": [10,1],
+                    "edit":[]
                 }
             ]
 		},        
@@ -127,6 +137,7 @@
             "window" : "self",
             "title" : "",
             "perm": [10],
+            "edit" : [],
             "itens": []
 		}        
 	]

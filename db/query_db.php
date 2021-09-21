@@ -3,7 +3,7 @@
     $query_db = array(
          "0" => "SELECT * FROM tb_user WHERE y00='x00' AND y01='x01';",
          "1" => "INSERT INTO tb_usuario VALUES ('a','b','c');",
-         "2" => "SELECT * FROM tb_schedule where id_user='x00' AND dt_schedule between 'x01' and 'x02';",
+         "2" => "SELECT * FROM tb_schedule where dt_schedule between 'x01' and 'x02';",
          "3" => "INSERT INTO tb_schedule (y00, y01, y02) VALUES(x00, 'x01', 'x02') ON DUPLICATE KEY UPDATE txt='x02';",
          "4" => "DELETE FROM tb_schedule WHERE y00 = x00 AND y01 = 'x01' ;",
          "5" => "INSERT INTO tb_pessoa (y00, y01, y02, y03, y04, y05, y06, y07, y08, y09, y10) VALUES ('x00','x01','x02','x03','x04','x05','x06','x07','x08','x09','x10');",

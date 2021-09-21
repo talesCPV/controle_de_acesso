@@ -6,19 +6,19 @@
             grid-template-areas:
             ".        lbl-nome lbl-nome"
             "cnv-foto edt-nome edt-nome"
-            "cnv-foto lbl-rua lbl-rua"
-            "cnv-foto cmb-rua cmb-rua"
-            "cnv-foto lbl-num lbl-num"
-            "cnv-foto edt-num edt-num"
             "cnv-foto lbl-cpf lbl-rg"
             "cnv-foto edt-cpf edt-rg"
             "cnv-foto lbl-tel lbl-cel"
-            "btn-foto edt-tel edt-cel"
-            "lbl-email lbl-email lbl-email"
-            "edt-email edt-email edt-email"
+            "cnv-foto edt-tel edt-cel"
+            "cnv-foto lbl-email lbl-email"
+            "cnv-foto edt-email edt-email"
+            "cnv-foto lbl-rua lbl-rua"
+            "cnv-foto cmb-rua cmb-rua"
+            "cnv-foto lbl-num lbl-num"
+            "btn-foto edt-num edt-num"
             "lbl-obs lbl-obs lbl-obs"
             "txt-obs txt-obs txt-obs"
-            "btn-save btn-save btn-save";           
+            ".       btn-save btn-del";           
             gap: 5px;
         }
   
@@ -31,7 +31,7 @@
             width: 100%;
         }
 
-        #edtTelefone, #edtCelular{
+        #edtNum{
             margin: 15px 0;
         }
 
@@ -56,26 +56,31 @@
         <input style="grid-area: edt-email;" type="text" id="edtEmail" maxlength="50">
         <canvas style="grid-area: cnv-foto;"id="canvas" class="d-none"></canvas>
         <button style="grid-area: btn-foto;" id="btnFoto">Foto</button>
-        <label style="grid-area: lbl-rua;">Rua</label>
+        <label style="grid-area: lbl-rua;" id="lbl-rua">Rua</label>
         <select style="grid-area: cmb-rua;" id="cmbRuas"></select>
-        <label style="grid-area: lbl-num;">Número:</label>
+        <select style="grid-area: cmb-rua;" id="cmbMorador"></select>
+        <label style="grid-area: lbl-num;" id="lbl-num">Número:</label>
         <input style="grid-area: edt-num;" type="text" id="edtNum" onkeyup="onlyNum(this,0)" maxlength="5">    
         <label style="grid-area: lbl-obs;">Obs:</label>
         <textarea style="grid-area: txt-obs;" id="txtObs" rows="10"></textarea>
         <button style="grid-area: btn-save;" id="btnSave">Salvar</button>
+        <button style="grid-area: btn-del;" id="btnDel">Deletar</button>
 
     </div>
 
-
-
 </template>
 
-<script>    
+<script>        
+
+//    const perm = JSON.parse(localStorage.getItem("perm"));
+
+
     const data = modal_data.value.split("|");
     const id = data[0];
     const status = data[6];
     const nome = document.getElementById('edtNome');
     const rua = document.getElementById('cmbRuas');
+    const morador = document.getElementById('cmbMorador');
     const num = document.getElementById('edtNum');
     const cpf = document.getElementById('edtCPF');
     const rg = document.getElementById('edtRG');
@@ -84,34 +89,76 @@
     const cel = document.getElementById('edtCelular');
     const obs = document.getElementById('txtObs');
     const foto = document.getElementById('canvas');
-
-    loadRuas();
+    const btnSave = document.getElementById('btnSave');
     blockFields(true);
+
+    prepara();
 
     nome.value = data[1];
     num.value = data[3];
     cpf.value = data[4];
     rg.value = data[5];
-
     email.value = data[8];
     tel.value = data[9];
     cel.value = data[10];
     obs.value = data[11];
 
-    console.log(data);
+    btnSave.addEventListener('click',()=>{
+        if(btnSave.innerHTML === "Editar"){
+            blockFields(false);
+        }else{
+            blockFields(true);
+        }
+
+    })
+
+    function prepara(){
+        const perm = localStorage.getItem("class");
+
+        if(status.trim() === "MORADOR"){
+            document.getElementById('lbl-rua').innerHTML = "Rua";
+            document.getElementById('lbl-num').style.display = "block";
+            rua.style.display = "block";
+            num.style.display = "block";
+            morador.style.display = "none";
+            loadRuas();
+        }else if(status.trim() === "VISITANTE"){
+            document.getElementById('lbl-rua').innerHTML = "Morador";
+            document.getElementById('lbl-num').style.display = "block";
+            rua.style.display = "none";
+            num.style.display = "block";
+            morador.display = "block";
+            loadMorador();
+        }else if(status.trim() === "FUNCIONÀRIO"){
+            document.getElementById('lbl-rua').innerHTML = "";
+            document.getElementById('lbl-num').style.display = "none";
+            rua.style.display = "none";
+            num.style.display = "none";
+            morador.style.display = "none";
+        }
+
+    }
 
     function blockFields(on_off){
+        const perm = localStorage.getItem("class");
         const x = document.querySelector(".grid-pessoas").childNodes;
         for (let i = 0; i < x.length; i++) {
             x[i].disabled = on_off;            
         }
+
+        if(perm == "10" || status.trim() === "VISITANTE"){
+            document.getElementById('btnSave').disabled = false;
+            if(on_off){
+                document.getElementById('btnSave').innerHTML = 'Editar';
+            }else{
+                document.getElementById('btnSave').innerHTML = 'Salvar';
+            }
+        }
     }
 
     function loadRuas(){
-
         const params = new Object;
         const resp = queryDB(params,8);
-
         resp.then((resolve)=>{
             cmbRuas.innerHTML = '';
             const rows = JSON.parse(resolve)
@@ -124,10 +171,29 @@
                 }
                 cmbRuas.appendChild(opt);
             }
-
         }); 
-
     }
 
+ 
+    function loadMorador(){
+        const params = new Object;
+            params.status = "MORADOR"
+        const resp = queryDB(params,7);
+        resp.then((resolve)=>{        
+            const rua = document.getElementById('cmbMorador');                
+            const rows =  JSON.parse(resolve);
+            rua.innerHTML = '';
+            for(let i=0; i<rows.length; i++){
+                const opt = document.createElement('option');
+                opt.innerHTML = rows[i].nome;
+                opt.value = [rows[i].num,rows[i].rua];
+                if(data[2] == rows[i].nome){
+                    opt.selected = true;
+                }                
+                rua.appendChild(opt);
+            }
+
+        }); 
+    }
 
 </script>    
