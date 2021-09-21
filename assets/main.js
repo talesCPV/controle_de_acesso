@@ -202,7 +202,7 @@ function logout_here(){
     window.open("index.html","_self")  
 }
 
-function openHTML(template,where="window",label){
+function openHTML(template,where="window",label, data=""){
     if(template.trim() != ""){
         fetch( "templates/"+template)
         .then( stream => stream.text())
@@ -211,6 +211,7 @@ function openHTML(template,where="window",label){
             temp.innerHTML = text;
             const body = temp.getElementsByTagName('template')[0];
             const script = temp.getElementsByTagName('script')[0];
+
             if(body != undefined){
                 if(where == "self"){
                 screen.innerHTML = body.innerHTML
@@ -219,6 +220,7 @@ function openHTML(template,where="window",label){
                 modal_title.innerHTML = label;
                 modal.style.display = "block";
             }
+            modal_data.value = data;
             eval(script.innerHTML);
             }
         }); 

@@ -1,0 +1,116 @@
+<template>
+ 
+    <style>
+          .grid-pessoas{
+            display : grid;
+            grid-template-areas:
+            ".        lbl-nome lbl-nome"
+            "cnv-foto edt-nome edt-nome"
+            "cnv-foto lbl-rua lbl-rua"
+            "cnv-foto cmb-rua cmb-rua"
+            "cnv-foto lbl-num lbl-num"
+            "cnv-foto edt-num edt-num"
+            "cnv-foto lbl-cpf lbl-rg"
+            "cnv-foto edt-cpf edt-rg"
+            "cnv-foto lbl-tel lbl-cel"
+            "btn-foto edt-tel edt-cel"
+            "lbl-email lbl-email lbl-email"
+            "edt-email edt-email edt-email"
+            "lbl-obs lbl-obs lbl-obs"
+            "txt-obs txt-obs txt-obs"
+            "btn-save btn-save btn-save";           
+            gap: 5px;
+        }
+  
+        #edtTelefone, #edtCelular{
+            margin: 15px 0;
+        }
+
+        #cmbRuas{
+            padding: 7px 0;
+        }
+
+    </style>
+
+    <div class="frm-border grid-pessoas">
+        <label style="grid-area: lbl-nome;">Nome: *</label>
+        <input style="grid-area: edt-nome;" type="text" id="edtNome" maxlength="50">     
+        <label style="grid-area: lbl-cpf;">CPF:</label>
+        <input style="grid-area: edt-cpf;" type="text" id="edtCPF" onkeyup="valCPF(this)" maxlength="14">
+        <label style="grid-area: lbl-rg;">RG:</label>
+        <input style="grid-area: edt-rg;" type="text" id="edtRG" onkeyup="valRG(this)" maxlength="12">    
+        <label style="grid-area: lbl-tel;">Telefone:</label>
+        <input style="grid-area: edt-tel;" type="text" id="edtTelefone" onkeyup="valTel(this)" maxlength="15">
+        <label style="grid-area: lbl-cel;">Celular:</label>
+        <input style="grid-area: edt-cel;" type="text" id="edtCelular" onkeyup="valTel(this)" maxlength="15">
+        <label style="grid-area: lbl-email;">Email:</label>        
+        <input style="grid-area: edt-email;" type="text" id="edtEmail" maxlength="50">
+        <canvas style="grid-area: cnv-foto;"id="canvas" class="d-none"></canvas>
+        <button style="grid-area: btn-foto;" id="btnFoto">Foto</button>
+        <label style="grid-area: lbl-rua;">Rua</label>
+        <select style="grid-area: cmb-rua;" id="cmbRuas"></select>
+        <label style="grid-area: lbl-num;">Número:</label>
+        <input style="grid-area: edt-num;" type="text" id="edtNum" onkeyup="onlyNum(this,0)" maxlength="5">    
+        <label style="grid-area: lbl-obs;">Obs:</label>
+        <textarea style="grid-area: txt-obs;" id="txtObs" rows="10"></textarea>
+        <button style="grid-area: btn-save;" id="btnSave">Salvar</button>
+
+    </div>
+
+
+
+</template>
+
+<script>    
+    const data = modal_data.value.split("|");
+    const id = data[0];
+    const status = data[6];
+    const nome = document.getElementById('edtNome');
+    const rua = document.getElementById('cmbRuas');
+    const num = document.getElementById('edtNum');
+    const cpf = document.getElementById('edtCPF');
+    const rg = document.getElementById('edtRG');
+    const email = document.getElementById('edtEmail');
+    const tel = document.getElementById('edtTelefone');
+    const cel = document.getElementById('edtCelular');
+    const obs = document.getElementById('txtObs');
+    const foto = document.getElementById('canvas');
+
+    loadRuas();
+
+    nome.value = data[1];
+    num.value = data[3];
+    cpf.value = data[4];
+    rg.value = data[5];
+
+    email.value = data[8];
+    tel.value = data[9];
+    cel.value = data[10];
+    obs.value = data[11];
+
+    console.log(data);
+
+    function loadRuas(){
+
+        const params = new Object;
+        const resp = queryDB(params,8);
+
+        resp.then((resolve)=>{
+            cmbRuas.innerHTML = '';
+            const rows = JSON.parse(resolve)
+            for(let i=0; i<rows.length; i++){
+                const opt = document.createElement('option');
+                    opt.innerHTML = rows[i].nome;
+                    opt.value = rows[i].id;
+                    if(data[2] == rows[i].nome){
+                        opt.selected = true;
+                    }
+                cmbRuas.appendChild(opt);
+            }
+
+        }); 
+
+    }
+
+
+</script>    
