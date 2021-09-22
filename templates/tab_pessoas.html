@@ -2,15 +2,10 @@
  
     <style>
   
-        .pesq-pessoas{
-            display : grid;
-            grid-template-columns: 1fr 2fr 3fr 2fr;
-            grid-template-rows: 50px;
-            gap: 5px;
-        }
- 
-        .pesq-pessoas > *{
-            padding: 10px;
+
+        #tbl-pesq-pessoas{
+            width: 100%;
+            font-size: 30px;     
         }
 
         #btnBusca{
@@ -18,35 +13,15 @@
             height: 100%;
         }
 
-        #frm-pesq-pessoas{
-            height: 90%;
-        }
-
-        #tbl-pesq-pessoas{
-            width: 100%;
-            font-size: 30px;     
-        }
-
-
-
     </style>
-
-    <h2>Consulta de Cadastros</h2>
 
     <div class="frm-border pesq-pessoas">
         <label id="lblBusca">Busca por:</label>
-        <select  id="cmbBusca">
-            <option value="1">Moradores</option>
-            <option value="2">Visitantes</option>
-            <option value="3">Funcionários</option>
-            <option value="4">Todos</option>
-        </select>
-
         <input  type="text" id="edtBusca" placeholder="Digite o Nome">
         <button  id="btnBusca">Busca</button>
 
     </div>
-  
+
     <div  class="frm-border" id="frm-pesq-pessoas">
         <table id="tbl-pesq-pessoas"></table>
     </div>
@@ -54,31 +29,42 @@
 </template>
 
 <script>
-  
 
-        document.getElementById('edtBusca').addEventListener('keyup',(event)=>{
-          if(event.keyCode === 13){
+    const data = modal_data.value.split("|");
+
+    let lblReturn = document.getElementById('lblMorador');
+
+    if(data[0]=="VISITANTE"){
+        lblReturn = document.getElementById('lblVisitante');
+    }
+
+
+
+  
+    document.getElementById('edtBusca').addEventListener('keyup',(event)=>{
+        if(event.keyCode === 13){
             document.getElementById('btnBusca').click();
-          }
-        })
+        }
+    })
+
+
+
+
+    function openTable(){
+
+
+
+    }
+
 
         document.getElementById('btnBusca').addEventListener('click',()=>{
             cmbBusca = document.getElementById('cmbBusca');
             edtBusca = document.getElementById('edtBusca');
             tblPessoas = document.getElementById('tbl-pesq-pessoas');
 
-            let status = "MORADOR"
-            if(cmbBusca.value == "2"){
-                status = "VISITANTE"
-            }else if(cmbBusca.value == "3"){
-                status = "FUNCIONÁRIO";
-            }else if(cmbBusca.value == "4"){
-                status = "";
-            }
-
             const params = new Object;
                     params.nome = edtBusca.value;
-                    params.status = status;
+                    params.status = data[0];
 
             const myPromisse = queryDB(params,11);   
 
@@ -99,19 +85,19 @@
                             row.appendChild(col);
                         }
 
-                        row.addEventListener('click',(event)=>{
+                        row.addEventListener('click',(event)=>{                          
                             let target = event.target;
                                 while (target.nodeName != 'TR') {
                                     target = target.parentElement;
                                 }
 
-                                const dataRow = target.cells; 
-                       
-                                let out = "";
-                                for(let j=0; j<dataRow.length; j++){
-                                    out += dataRow[j].innerHTML+"|"
-                                }
-                                openHTML("show_cad.html",'pop-up', dataRow[1].innerHTML, out);
+                                const dataRow = target.cells;
+
+                                lblReturn.innerHTML = dataRow[1].innerHTML;
+                                lblReturn.style.background = "rgb(134, 196, 137)";
+
+                                console.log(lblReturn)
+                                closeModal.click();
 
                         })
 
@@ -120,7 +106,16 @@
 
                     }
                 }else{
-                    tblPessoas.innerHTML = "<tr><th>Nenhum registro encontrado.</th></tr>";
+                    if(data[0]=="MORADOR"){
+                        tblPessoas.innerHTML = "<tr><th>Nenhum registro encontrado.</th></tr>";
+                    }else{
+                        tblPessoas.innerHTML = `<tr><th>Nenhum registro encontrado.</th></tr>
+                                                <tr><td>Adicionar Novo Visitante</td></tr>`;
+
+                        tblPessoas.rows[1].addEventListener('click',()=>{
+                            openHTML("cad_visitante.html",'pop-up', "Cadastro de Visitante");
+                        })
+                    }
                 }
 
             }); 

@@ -91,7 +91,7 @@
                     "nome": "Novo acesso",
                     "link": "",
                     "id": "menu-cad_acesso",
-                    "template" : "cad_acesso.html",
+                    "template" : "novo_acesso.html",
                     "window" : "self",
                     "title" : "",
                     "params": [],

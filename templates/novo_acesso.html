@@ -1,0 +1,84 @@
+<template>
+ 
+    <style>
+  
+        .pesq-pessoas{
+            display : grid;
+            grid-template-columns: 1fr 5fr 2fr;
+            grid-template-rows: 50px;
+            gap: 5px;
+        }
+ 
+        .pesq-pessoas > *{
+            padding: 10px;
+        }
+
+        #btnBuscaMor, #btnBuscaVis{
+            margin-top: 0;
+            height: 100%;
+            width: 100%;
+        }
+
+        #lblMorador, #lblVisitante{
+            height: 100%;
+            width: 100%;
+            background-color: rgb(196, 138, 134);
+            font-size: 2em;
+            font-weight: 500;
+            padding: 10px;
+        }
+
+
+        #frm-pesq-pessoas{
+            height: 90%;
+        }
+
+        #tbl-pesq-pessoas{
+            width: 100%;
+            font-size: 30px;     
+        }
+
+
+
+    </style>
+
+    <h2>Acessos - Entrada/Saída</h2>
+
+    <div class="frm-border pesq-pessoas">
+        <label>Morador:</label>
+       <label id="lblMorador"></label>
+        <button  id="btnBuscaMor">Busca</button>
+    </div>
+    <div class="frm-border pesq-pessoas">
+        <label>Visitante:</label>
+        <label id="lblVisitante"></label>
+        <button  id="btnBuscaVis">Busca</button>
+    </div>
+    <div class="frm-border" style="display: flex; flex-direction: column; margin: 40px 5px;">
+        <label>Sentido</label>
+        <select id="cmbSentido">
+            <option value="ENTRADA">ENTRADA</option>
+            <option value="SAIDA">SAÍDA</option>
+        </select>
+        <label>Data e Hora:</label>
+        <input type="date">
+        <input type="time">
+        <button  id="btnBuscaVis">Salvar</button>
+    </div>
+
+</template>
+
+<script>
+  
+        document.getElementById('btnBuscaMor').addEventListener('click',()=>{
+            openHTML("tab_pessoas.html",'pop-up', "Consulta Morador", "MORADOR");
+        })
+
+        document.getElementById('btnBuscaVis').addEventListener('click',()=>{
+            openHTML("tab_pessoas.html",'pop-up', "Consulta Visitante", "VISITANTE");
+        })
+
+
+
+
+</script>
