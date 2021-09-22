@@ -78,6 +78,14 @@ canvas{
     border-radius: 10px;
 }
 
+textarea{
+    padding: 15px;
+    border: solid 5px rgba(39, 75, 63,0.8);
+    border-radius: 10px;
+    font-family: 'Raleway';
+    font-size: 15px;
+}
+
 .frm-border{
     padding: 10px;
     border: solid 5px rgba(39, 75, 63,0.8);

@@ -217,14 +217,16 @@ function openHTML(template,where="window",label, data=""){
 
             if(body != undefined){
                 if(where == "self"){
-                screen.innerHTML = body.innerHTML
-            }else{
-                modal_text.innerHTML = body.innerHTML;
-                modal_title.innerHTML = label;
-                modal.style.display = "block";
-            }
-            modal_data.value = data;
-            eval(script.innerHTML);
+                    screen.innerHTML = body.innerHTML;
+                }else if(where == "pop-up"){
+                    modal_text.innerHTML = body.innerHTML;
+                    modal_title.innerHTML = label;
+                    modal.style.display = "block";
+                }else{
+                    document.getElementById(where).innerHTML = body.innerHTML;
+                }
+                modal_data.value = data;
+                eval(script.innerHTML);
             }
         }); 
     }
@@ -295,6 +297,16 @@ function upImage(cnv, filename='temp'){ // receive canvas
         }else{
             alert("Não foi possível salvar a foto")
         }
+}
+
+function loadImage(cnv,pic){
+    const img = new Image()
+    img.width = cnv.width;
+    img.height = cnv.height;
+    img.src = window.location.href.substring(0, location.href.lastIndexOf("/")+1)+"fotos/"+pic+".png";
+    img.onload = () => {
+        cnv.getContext("2d").drawImage(img,0,0)
+    }
 }
 
 function clearCanvas(cnv){

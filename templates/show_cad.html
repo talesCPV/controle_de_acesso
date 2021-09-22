@@ -26,7 +26,7 @@
             padding: 5px;
         }
 
-        .grid-pessoas > canvas{
+        .grid-pessoas > canvas, .grid-pessoas > video{
             height: 100%;
             width: 100%;
         }
@@ -54,8 +54,10 @@
         <input style="grid-area: edt-cel;" type="text" id="edtCelular" onkeyup="valTel(this)" maxlength="15">
         <label style="grid-area: lbl-email;">Email:</label>        
         <input style="grid-area: edt-email;" type="text" id="edtEmail" maxlength="50">
-        <canvas style="grid-area: cnv-foto;"id="canvas" class="d-none"></canvas>
-        <button style="grid-area: btn-foto;" id="btnFoto">Foto</button>
+        <canvas style="grid-area: cnv-foto;" id="canvas" class="d-none"></canvas>
+        <video style="grid-area: cnv-foto;" id="webcam" autoplay ></video>        
+        <button style="grid-area: btn-foto;" id="btnFoto">Nova Foto</button>
+        <input type="hidden" id="hdnFoto">
         <label style="grid-area: lbl-rua;" id="lbl-rua">Rua</label>
         <select style="grid-area: cmb-rua;" id="cmbRuas"></select>
         <select style="grid-area: cmb-rua;" id="cmbMorador"></select>
@@ -64,8 +66,7 @@
         <label style="grid-area: lbl-obs;">Obs:</label>
         <textarea style="grid-area: txt-obs;" id="txtObs" rows="10"></textarea>
         <button style="grid-area: btn-save;" id="btnSave">Salvar</button>
-        <button style="grid-area: btn-del;" id="btnDel">Deletar</button>
-
+        <button style="grid-area: btn-del;" id="btnDel">Deletar</button>        
     </div>
 
 </template>
@@ -88,8 +89,16 @@
     const tel = document.getElementById('edtTelefone');
     const cel = document.getElementById('edtCelular');
     const obs = document.getElementById('txtObs');
-    const foto = document.getElementById('canvas');
+    const foto = document.getElementById('hdnFoto');
     const btnSave = document.getElementById('btnSave');
+    const btnDel = document.getElementById('btnDel');
+    const btnFoto = document.getElementById('btnFoto');
+
+    const webcamElement = document.getElementById('webcam');
+    const snapSoundElement = document.getElementById('snapSound');
+    const canvasElement = document.getElementById('canvas');    
+    const webcam = new Webcam(webcamElement, 'user', canvasElement, snapSoundElement);
+
     blockFields(true);
 
     prepara();
@@ -98,18 +107,66 @@
     num.value = data[3];
     cpf.value = data[4];
     rg.value = data[5];
+    foto.value = data[7];
     email.value = data[8];
     tel.value = data[9];
-    cel.value = data[10];
+    cel.value = data[10]; 
     obs.value = data[11];
 
+    if(foto.value == ""){
+        foto.value = id;
+    }
+    clearCanvas(canvasElement)
+    loadImage(canvasElement,foto.value);
+    
     btnSave.addEventListener('click',()=>{
         if(btnSave.innerHTML === "Editar"){
             blockFields(false);
         }else{
-            blockFields(true);
+//            blockFields(true);
+            const params = new Object;
+                params.nome = nome.value;
+                params.rua = rua.value;
+                params.num = num.value;
+                params.CPF = cpf.value;
+                params.RG = rg.value;
+                params.foto = foto.value;
+                params.email = email.value;
+                params.tel = tel.value;
+                params.cel = cel.value;
+                params.obs = obs.value;         
+
+
+        }
+    })
+
+    btnDel.addEventListener('click',()=>{
+
+        if (confirm('Deseja deletar este registro?')) {
+            const params = new Object;
+                params.id = id;
+
+            queryDB(params,13);
+            document.getElementById('btnBusca').click();
+            closeModal.click();
+            }
+    })
+
+    btnFoto.addEventListener('click',()=>{
+        if(btnFoto.innerHTML == "Nova Foto"){
+            btnFoto.innerHTML = "OK";
+            document.getElementById('webcam').style.display = "block";
+            webcam.start();
+        }else{
+            webcam.snap();
+            btnFoto.innerHTML = "Nova Foto";
+            document.getElementById('webcam').style.display = "none";
+            webcam.stop();
+            upImage(canvasElement,foto.value);
+//            loadImage(canvasElement,foto.value);
         }
 
+//            openHTML('foto.html','pop-up',`FOTO DO ${status}`)
     })
 
     function prepara(){

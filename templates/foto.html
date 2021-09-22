@@ -33,24 +33,15 @@
   const webcam = new Webcam(webcamElement, 'user', canvasElement, snapSoundElement);
   const btnTakePic = document.getElementById('btnTakePic');
 
+  console.log(webcam)
+
   webcam.start();
 
   btnTakePic.addEventListener('click',()=>{
     let picture = webcam.snap();
     closeModal.click();
     webcam.stop();
-/*    
-    const resp = upImage(canvasElement);
 
-
-    resp.then((resolve)=>{
-      console.log(resolve.status);
-      if(resolve.status === 200){
-        webcam.stop();
-        closeModal.click();
-      }
-    })
-*/
   })
 
 </script>
