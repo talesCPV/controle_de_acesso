@@ -13,7 +13,7 @@
          "9" => "INSERT INTO tb_ruas (y00) VALUES ('x00') ;",
          "10" => "DELETE FROM tb_ruas WHERE y00='x00' ;",
          "11" => "SELECT * FROM tb_pessoa WHERE y00 LIKE '%x00%' AND y01 LIKE '%x01%';",
-         "12" => "UPDATE tb_pessoa SET y00='x00', y01='x01', y02='x02', y03='x03', y04='x04', y05='x05', y06='x06', y07='x07', y08='x08', y09='x09'; ",
+         "12" => "UPDATE tb_pessoa SET y00='x00', y01='x01', y02='x02', y03='x03', y04='x04', y05='x05', y06='x06', y07='x07', y08='x08', y09='x09' WHERE y10='x10'; ",
          "13" => "DELETE FROM tb_pessoa WHERE y00='x00'; "
 
 

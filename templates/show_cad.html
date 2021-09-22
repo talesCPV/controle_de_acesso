@@ -123,8 +123,11 @@
         if(btnSave.innerHTML === "Editar"){
             blockFields(false);
         }else{
-//            blockFields(true);
-            const params = new Object;
+            if(valCampos([nome])){
+                if(hasFoto(canvasElement)){
+                    upImage(canvasElement,foto.value);
+                }      
+                const params = new Object;
                 params.nome = nome.value;
                 params.rua = rua.value;
                 params.num = num.value;
@@ -134,7 +137,31 @@
                 params.email = email.value;
                 params.tel = tel.value;
                 params.cel = cel.value;
-                params.obs = obs.value;         
+                params.obs = obs.value;
+                params.id = id;  
+
+                if(status.trim() === "VISITANTE"){
+                    const end = document.getElementById('cmbMorador').value.split(',');
+                    params.rua = end[1];
+                    params.num = end[0];
+                }else if(status.trim() === "FUNCIONÀRIO"){
+                    params.rua = "PORTARIA";
+                    params.num = '0';                    
+                }
+
+
+                const myPromisse = queryDB(params,12);            
+
+                myPromisse.then((resolve)=>{         
+                    alert('Cadastro Salvo');
+                    blockFields(true);
+                    document.getElementById('btnBusca').click();
+                })
+
+
+            }
+
+        
 
 
         }
@@ -163,10 +190,7 @@
             document.getElementById('webcam').style.display = "none";
             webcam.stop();
             upImage(canvasElement,foto.value);
-//            loadImage(canvasElement,foto.value);
         }
-
-//            openHTML('foto.html','pop-up',`FOTO DO ${status}`)
     })
 
     function prepara(){
@@ -181,9 +205,9 @@
             loadRuas();
         }else if(status.trim() === "VISITANTE"){
             document.getElementById('lbl-rua').innerHTML = "Morador";
-            document.getElementById('lbl-num').style.display = "block";
+            document.getElementById('lbl-num').style.display = "none";
             rua.style.display = "none";
-            num.style.display = "block";
+            num.style.display = "none";
             morador.display = "block";
             loadMorador();
         }else if(status.trim() === "FUNCIONÀRIO"){
@@ -244,7 +268,7 @@
                 const opt = document.createElement('option');
                 opt.innerHTML = rows[i].nome;
                 opt.value = [rows[i].num,rows[i].rua];
-                if(data[2] == rows[i].nome){
+                if(data[2] == rows[i].rua && data[3] == rows[i].num){
                     opt.selected = true;
                 }                
                 rua.appendChild(opt);
