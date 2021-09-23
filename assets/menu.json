@@ -79,7 +79,7 @@
                     "nome": "Histórico",
                     "link": "",
                     "id": "menu-pesq_acesso",
-                    "template" : "pesq_acesso.html",
+                    "template" : "acessos.html",
                     "window" : "self",
                     "title" : "",
                     "params": [],

@@ -205,7 +205,7 @@ function logout_here(){
     window.open("index.html","_self")  
 }
 
-function openHTML(template,where="window",label, data=""){
+function openHTML(template,where="window",label="", data=""){
     if(template.trim() != ""){
         fetch( "templates/"+template)
         .then( stream => stream.text())

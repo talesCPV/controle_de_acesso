@@ -1,0 +1,170 @@
+<template>
+ 
+    <style>
+  
+        .frm-busca{
+            display : grid;
+            grid-template-columns: 1fr 5fr;
+            grid-template-rows: 50px;
+            gap: 5px;
+        }
+
+        .frm-nomes{
+            display : none;
+            grid-template-columns: 6fr 2fr;
+            grid-template-rows: 50px;
+            gap: 5px;
+        }
+
+        .frm-datas{
+            display : grid;
+            grid-template-columns: 1fr 2fr 1fr 2fr 2fr;
+            grid-template-rows: 50px;
+            gap: 5px;
+        }
+
+        #tbl-pesq-pessoas{
+            width: 100%;
+            font-size: 30px;     
+        }
+
+        .frm-border > button{
+            margin-top: 0;
+            height: 100%;
+        }
+
+    </style>
+
+    <div class="frm-border frm-busca">
+        <label id="lblBusca">Busca por:</label>
+        <select id="cmbBusca">
+            <option value="1">Datas</option>
+            <option value="2">Visitante</option>
+            <option value="3">Morador</option>
+        </select>
+    </div>
+
+    <div class="frm-border frm-nomes">
+        <input  type="text" id="edtBusca" placeholder="Digite o Nome">
+        <button  id="btnNome">Busca</button>
+    </div>
+
+    <div class="frm-border frm-datas">
+        <label>Entrada:</label>
+        <input  type="date" id="edtEnt">
+        <label>Saída:</label>
+        <input  type="date" id="edtSai">
+        <button  id="btnData">Busca</button>
+    </div>
+
+    <div  class="frm-border" id="frm-pesq-pessoas">
+        <table id="tbl-pesq-pessoas"></table>
+    </div>
+
+</template>
+
+<script>
+    let sel = document.getElementById('cmbBusca').value;
+    const date = today.getFullYear()+"-"+today.getMonth().toString().padStart(2, '0')+"-"+today.getDate();
+
+    document.getElementById('edtEnt').value = date;
+    document.getElementById('edtSai').value = date;
+
+    document.getElementById('cmbBusca').addEventListener('change',()=>{
+        sel = document.getElementById('cmbBusca').value;
+
+        if( sel == 1){
+            document.querySelector('.frm-nomes').style.display = "none"; 
+            document.querySelector('.frm-datas').style.display = "grid"; 
+        }else if(sel >= 2){
+            document.querySelector('.frm-nomes').style.display = "grid"; 
+            document.querySelector('.frm-datas').style.display = "none"; 
+        }
+
+    })
+
+    document.getElementById('btnData').addEventListener('click',()=>{
+        const params = new Object;
+        
+            params.ent = document.getElementById('edtEnt').value + " 00:00:00";
+            params.sai = document.getElementById('edtSai').value + " 23:59:59";
+       
+        acessos(params,15);
+    })
+
+    document.getElementById('btnData').click();
+
+
+    document.getElementById('btnNome').addEventListener('click',()=>{
+        const params = new Object;
+        if(sel == 2){
+            params.campo = "v.nome";
+        }else{
+            params.campo = "m.nome";
+        }
+        params.valor = document.getElementById('edtBusca').value;            
+
+        acessos(params,16);
+    })    
+
+    let lblReturn = document.getElementById('lblMorador');
+    let idPes = document.getElementById('hdnIdMor');
+
+    if(data[0]=="VISITANTE"){
+        lblReturn = document.getElementById('lblVisitante');
+        idPes = document.getElementById('hdnIdVis');
+    }
+
+    document.getElementById('edtBusca').addEventListener('keyup',(event)=>{
+        if(event.keyCode === 13){
+            document.getElementById('btnNome').click();
+        }
+    })
+
+
+    function acessos(params,cod){
+
+        const myPromisse = queryDB(params,cod);   
+
+        myPromisse.then((resolve)=>{ 
+            const tblPessoas = document.getElementById('tbl-pesq-pessoas');        
+            if(resolve != ""){
+                const data = JSON.parse(resolve)
+                tblPessoas.innerHTML = "<tr><th>Visitante</th><th>Morador</th><th>Entrada</th><th>Saída</th></tr>";
+
+                for(let i=0; i<data.length; i++){
+                    const obj = Object.entries(data[i])
+                    const row = document.createElement('tr');                    
+                    for(let j=0; j<obj.length; j++){
+                        const col = document.createElement('td');
+                        col.innerHTML = obj[j][1];
+                        row.appendChild(col);
+                    }
+
+                    row.addEventListener('click',(event)=>{                          
+                        let target = event.target;
+                            while (target.nodeName != 'TR') {
+                                target = target.parentElement;
+                            }
+
+                            const dataRow = target.cells;
+                            
+                            console.log(dataRow)
+
+                    })
+                    tblPessoas.appendChild(row)
+                }
+            }else{
+                
+                tblPessoas.innerHTML = "<tr><th>Nenhum registro encontrado.</th></tr>";
+
+            }
+        
+        })
+
+
+    }
+
+    
+
+</script>

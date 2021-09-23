@@ -38,7 +38,15 @@
             font-size: 30px;     
         }
 
+        #frm-acesso{
+            display: flex;
+            flex-direction: column;             
+        }
 
+        #frm-acesso > *{
+            margin: 3px;
+            padding: 10px;
+        }
 
     </style>
 
@@ -46,39 +54,68 @@
 
     <div class="frm-border pesq-pessoas">
         <label>Morador:</label>
-       <label id="lblMorador"></label>
+        <label id="lblMorador"></label>
         <button  id="btnBuscaMor">Busca</button>
+        <input type="hidden" id="hdnIdMor">
+
     </div>
     <div class="frm-border pesq-pessoas">
         <label>Visitante:</label>
         <label id="lblVisitante"></label>
         <button  id="btnBuscaVis">Busca</button>
+        <input type="hidden" id="hdnIdVis">
     </div>
-    <div class="frm-border" style="display: flex; flex-direction: column; margin: 40px 5px;">
+    <div class="frm-border" id="frm-acesso" >
         <label>Sentido</label>
         <select id="cmbSentido">
             <option value="ENTRADA">ENTRADA</option>
             <option value="SAIDA">SAÍDA</option>
         </select>
         <label>Data e Hora:</label>
-        <input type="date">
-        <input type="time">
-        <button  id="btnBuscaVis">Salvar</button>
+        <input id="edtData" type="date">
+        <input id="edtHora" type="time">
+        <button  id="btnSalva">Salvar</button>
     </div>
 
 </template>
 
 <script>
-  
-        document.getElementById('btnBuscaMor').addEventListener('click',()=>{
-            openHTML("tab_pessoas.html",'pop-up', "Consulta Morador", "MORADOR");
-        })
 
-        document.getElementById('btnBuscaVis').addEventListener('click',()=>{
-            openHTML("tab_pessoas.html",'pop-up', "Consulta Visitante", "VISITANTE");
-        })
+    const date = today.getFullYear()+"-"+today.getMonth().toString().padStart(2, '0')+"-"+today.getDate();
+    const time = today.getHours()+":"+today.getMinutes().toString().padStart(2, '0')
+    document.getElementById('edtData').value = date
+    document.getElementById('edtHora').value = time
 
 
+    document.getElementById('btnBuscaMor').addEventListener('click',()=>{
+        openHTML("tab_pessoas.html",'pop-up', "Consulta Morador", "MORADOR");
+    })
+
+    document.getElementById('btnBuscaVis').addEventListener('click',()=>{
+        openHTML("tab_pessoas.html",'pop-up', "Consulta Visitante", "VISITANTE");
+    })
+
+    document.getElementById('btnSalva').addEventListener('click',()=>{
+        const idMor = document.getElementById('hdnIdMor').value;
+        const idVis = document.getElementById('hdnIdVis').value;
+        const data = document.getElementById('edtData').value +" " + document.getElementById('edtHora').value+":00" ;
+
+        const params = new Object;
+            params.id_morad = idMor;
+            params.id_visit = idVis;
+        if(document.getElementById('cmbSentido').value == "ENTRADA"){
+            params.ent = data;
+        }else{
+            params.sai = data;
+        }
+
+        const myPromisse = queryDB(params,14);  
+        myPromisse.then((resolve)=>{         
+            alert('Cadastro Salvo');
+            openHTML("acessos.html",'self');
+        }); 
+
+    })
 
 
 </script>

@@ -33,93 +33,76 @@
     const data = modal_data.value.split("|");
 
     let lblReturn = document.getElementById('lblMorador');
+    let idPes = document.getElementById('hdnIdMor');
 
     if(data[0]=="VISITANTE"){
         lblReturn = document.getElementById('lblVisitante');
+        idPes = document.getElementById('hdnIdVis');
     }
 
-
-
-  
     document.getElementById('edtBusca').addEventListener('keyup',(event)=>{
         if(event.keyCode === 13){
             document.getElementById('btnBusca').click();
         }
     })
 
+    document.getElementById('btnBusca').addEventListener('click',()=>{
+        cmbBusca = document.getElementById('cmbBusca');
+        edtBusca = document.getElementById('edtBusca');
+        tblPessoas = document.getElementById('tbl-pesq-pessoas');
 
+        const params = new Object;
+                params.nome = edtBusca.value;
+                params.status = data[0];
 
+        const myPromisse = queryDB(params,11);   
 
-    function openTable(){
-
-
-
-    }
-
-
-        document.getElementById('btnBusca').addEventListener('click',()=>{
-            cmbBusca = document.getElementById('cmbBusca');
-            edtBusca = document.getElementById('edtBusca');
-            tblPessoas = document.getElementById('tbl-pesq-pessoas');
-
-            const params = new Object;
-                    params.nome = edtBusca.value;
-                    params.status = data[0];
-
-            const myPromisse = queryDB(params,11);   
-
-            myPromisse.then((resolve)=>{         
-                if(resolve != ""){
-                    const data = JSON.parse(resolve)
-                    tblPessoas.innerHTML = "<tr><th>Cod.</th><th>Nome</th><th>Rua</th><th>Num.</th><th>Status</th></tr>";
-                    const showFields = ['id','nome','rua','num','status','telefone'];
-                    for(let i=0; i<data.length; i++){
-                        const obj = Object.entries(data[i])
-                        const row = document.createElement('tr');                    
-                        for(let j=0; j<obj.length; j++){
-                            const col = document.createElement('td');
-                            col.innerHTML = obj[j][1];
-                            if(!showFields.includes(obj[j][0])){
-                                col.style.display = "none";
-                            }
-                            row.appendChild(col);
+        myPromisse.then((resolve)=>{         
+            if(resolve != ""){
+                const data = JSON.parse(resolve)
+                tblPessoas.innerHTML = "<tr><th>Cod.</th><th>Nome</th><th>Rua</th><th>Num.</th><th>Status</th></tr>";
+                const showFields = ['id','nome','rua','num','status','telefone'];
+                for(let i=0; i<data.length; i++){
+                    const obj = Object.entries(data[i])
+                    const row = document.createElement('tr');                    
+                    for(let j=0; j<obj.length; j++){
+                        const col = document.createElement('td');
+                        col.innerHTML = obj[j][1];
+                        if(!showFields.includes(obj[j][0])){
+                            col.style.display = "none";
                         }
-
-                        row.addEventListener('click',(event)=>{                          
-                            let target = event.target;
-                                while (target.nodeName != 'TR') {
-                                    target = target.parentElement;
-                                }
-
-                                const dataRow = target.cells;
-
-                                lblReturn.innerHTML = dataRow[1].innerHTML;
-                                lblReturn.style.background = "rgb(134, 196, 137)";
-
-                                console.log(lblReturn)
-                                closeModal.click();
-
-                        })
-
-
-                        tblPessoas.appendChild(row)
-
+                        row.appendChild(col);
                     }
-                }else{
-                    if(data[0]=="MORADOR"){
-                        tblPessoas.innerHTML = "<tr><th>Nenhum registro encontrado.</th></tr>";
-                    }else{
-                        tblPessoas.innerHTML = `<tr><th>Nenhum registro encontrado.</th></tr>
-                                                <tr><td>Adicionar Novo Visitante</td></tr>`;
 
-                        tblPessoas.rows[1].addEventListener('click',()=>{
-                            openHTML("cad_visitante.html",'pop-up', "Cadastro de Visitante");
-                        })
-                    }
+                    row.addEventListener('click',(event)=>{                          
+                        let target = event.target;
+                            while (target.nodeName != 'TR') {
+                                target = target.parentElement;
+                            }
+
+                            const dataRow = target.cells;
+                            
+                            idPes.value = dataRow[0].innerHTML;
+                            lblReturn.innerHTML = dataRow[1].innerHTML;
+                            lblReturn.style.background = "rgb(134, 196, 137)";
+                            closeModal.click();
+
+                    })
+                    tblPessoas.appendChild(row)
                 }
+            }else{
+                if(data[0]=="MORADOR"){
+                    tblPessoas.innerHTML = "<tr><th>Nenhum registro encontrado.</th></tr>";
+                }else{
+                    tblPessoas.innerHTML = `<tr><th>Nenhum registro encontrado.</th></tr>
+                                            <tr><td>Adicionar Novo Visitante</td></tr>`;
 
-            }); 
-
-        })
+                    tblPessoas.rows[1].addEventListener('click',()=>{
+                        openHTML("cad_visitante.html",'pop-up', "Cadastro de Visitante");
+                    })
+                }
+            }
+        }); 
+    })
 
 </script>

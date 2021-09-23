@@ -14,9 +14,24 @@
          "10" => "DELETE FROM tb_ruas WHERE y00='x00' ;",
          "11" => "SELECT * FROM tb_pessoa WHERE y00 LIKE '%x00%' AND y01 LIKE '%x01%';",
          "12" => "UPDATE tb_pessoa SET y00='x00', y01='x01', y02='x02', y03='x03', y04='x04', y05='x05', y06='x06', y07='x07', y08='x08', y09='x09' WHERE y10='x10'; ",
-         "13" => "DELETE FROM tb_pessoa WHERE y00='x00'; "
-
-
+         "13" => "DELETE FROM tb_pessoa WHERE y00='x00'; ",
+         "14" => "INSERT INTO tb_acesso (y00, y01, y02) VALUES ('x00', 'x01', 'x02');",
+         "15" => "SELECT v.nome AS Visitante, m.nome AS Morador, a.ent AS Entrada, a.sai AS Saida 
+                FROM tb_acesso AS a 
+                INNER JOIN tb_pessoa AS v 
+                INNER JOIN tb_pessoa AS m 
+                ON v.id = a.id_visit
+                AND m.id = a.id_morad
+                AND a.ent BETWEEN 'x00' AND 'x01'
+                ORDER BY a.ent DESC ;",
+         "16" => "SELECT v.nome AS Visitante, m.nome AS Morador, a.ent AS Entrada, a.sai AS Saida 
+                FROM tb_acesso AS a 
+                INNER JOIN tb_pessoa AS v 
+                INNER JOIN tb_pessoa AS m 
+                ON v.id = a.id_visit
+                AND m.id = a.id_morad
+                AND x00 LIKE '%x01%'
+                ORDER BY a.ent DESC ;"                
     );
 
 
