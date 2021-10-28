@@ -1,0 +1,128 @@
+/* FOLHA DE ESTILO PERSONALIZADA
+
+pesq de icones: https://fontawesome.com/v6.0/icons?s=solid,brands
+
+*/
+
+/* CDN FONT-AWESOME */
+@import "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css";
+
+
+/* CONFIGURAÇÕES GERAIS */
+*{
+    box-sizing: border-box;
+}
+
+:root{
+    --selection : #349dda;
+    --sel_hover : #206892fa;
+    --font_color : #000000;
+    --font_hover : #d8d5d5;
+    --heigth: 35px;
+}
+
+/* INPUTS ESTILIZADOS */
+
+.input{
+    display: inline-block;
+    padding: 0;
+    border: solid 1px var(--font_color);
+    color: var(--font_color);
+    width: auto;
+    height: var(--heigth);           
+}
+
+.input *{
+    margin: 5px 0; 
+    padding: 0 3px;            
+}
+
+.input > label{
+    width: 5px;
+}
+
+.input:focus-within{
+    border: solid 1px var(--selection);
+    color: var(--selection);
+}
+
+.input > input{
+    border: none;
+    width: auto;
+    padding: 5px;
+}
+
+/* BUTTONS */
+
+.input button{
+    border: solid 6px var(--selection);
+    margin: 0;
+    cursor: pointer;
+    background-color: var(--selection);
+}
+
+.input button:hover{
+    border: solid 6px var(--sel_hover);
+    background-color: var(--sel_hover);
+    color:  var(--font_hover);
+}
+
+/* CHECKBOX */
+
+.checkbox{
+    display: inline-block;      
+    border: solid 1px black;
+    height: var(--heigth);
+    width: 80px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}        
+
+.checkbox > input{
+    display: none;
+}
+
+.checkbox input + label::before, .checkbox input + label::after{
+    display: inline-block;
+    content: "";
+    width: 50%;
+    height: 100%;
+    cursor: pointer;
+    vertical-align: middle;
+    text-align: center;
+    line-height: var(--heigth);
+    
+}
+
+.checkbox input + label::before{
+    content: "OFF";
+    background-color: var(--selection);
+}
+
+.checkbox input + label::after{
+    content: "";
+    background-color: rgb(214, 214, 214);
+}
+
+.checkbox input:checked + label::before{
+    content: "";
+    background-color: rgb(214, 214, 214);
+}
+
+.checkbox input:checked + label::after{
+    content: "ON";
+    background-color: var(--selection);
+}
+
+/* BUTTONS */
+
+.button{
+    height: var(--heigth);
+    border: solid 1px black;
+    cursor: pointer;
+    background-color: var(--selection);
+}
+
+.button:hover{
+    background-color: var(--sel_hover);
+    color: var(--font_hover);
+}
